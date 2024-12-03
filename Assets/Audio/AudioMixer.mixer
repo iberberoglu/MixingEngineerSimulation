@@ -71,6 +71,8 @@ AudioMixerController:
     name: Ch3
   - guid: 83c006a0adea94b2a92a6d817d3e574b
     name: Ch4
+  - guid: 206e9d2580a4f4aed8fd8a19be80bb1e
+    name: Master
   m_AudioMixerGroupViews:
   - guids:
     - 013a05bf970484b02ba8a1851ce0f750

@@ -11,7 +11,6 @@ public class MixerManager : MonoBehaviour
     [SerializeField] private Slider ch4Slider;
     [SerializeField] private Button toggleButton; // Tüm kanalları kontrol eden buton
     [SerializeField] private AudioSource[] audioSources; // Audio kanalları için AudioSource bileşenleri
-
     public bool isPlaying = true; // Seslerin çalıp çalmadığını takip eder
 
     void Start()
@@ -31,6 +30,7 @@ public class MixerManager : MonoBehaviour
         // Butona listener ekle
         toggleButton.onClick.AddListener(ToggleAudio);
     }
+
 
     private void SetMixerVolume(string channel, float value)
     {
