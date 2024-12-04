@@ -8,11 +8,11 @@ public class PlayPauseImageChange : MonoBehaviour
     [SerializeField] Sprite playImage;
     [SerializeField] Sprite pauseImage;
     [SerializeField] Image imageComponent;
-    [SerializeField] MixerManager mixerManager;
+    [SerializeField] MixerControl mixerControl;
     
     public void ChangeImage()
     {
-        if(mixerManager.isPlaying)
+        if(mixerControl.isPlaying)
         {
             imageComponent.sprite = playImage;
         }

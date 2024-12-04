@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98e5b537fc0c64cdca0e7926f66b0c13, type: 3}
+  m_Name: Songs
+  m_EditorClassIdentifier: 
+  channel1Event:
+    Guid:
+      Data1: 242343396
+      Data2: 1335501087
+      Data3: 991842216
+      Data4: 677411502
+    Path: event:/Bass
+  channel2Event:
+    Guid:
+      Data1: -511359520
+      Data2: 1285847690
+      Data3: -43995206
+      Data4: -440951344
+    Path: event:/Drums
+  channel3Event:
+    Guid:
+      Data1: 1204719089
+      Data2: 1144105010
+      Data3: -2066753144
+      Data4: -1327413723
+    Path: event:/GuitarKeyboard
+  channel4Event:
+    Guid:
+      Data1: 2129014171
+      Data2: 1098708447
+      Data3: -1001240913
+      Data4: -90231151
+    Path: event:/Vox
+  songName: Track 1
