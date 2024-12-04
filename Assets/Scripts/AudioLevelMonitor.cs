@@ -13,6 +13,7 @@ public class AudioLevelMonitor : MonoBehaviour
     [Header("Image & Sprites")]
     public Image masterVolumeComponent; // Ses seviyesi göstergesi için Image
     public Sprite[] masterVolumeSprites; // Ses seviyesine bağlı değişen 14 sprite
+    
 
     void Start()
     {

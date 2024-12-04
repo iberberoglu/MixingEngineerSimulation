@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Master Volume
+    uniqueID: 366234933
+    locked: 0
+  - name: Fader
+    uniqueID: 357746915
+    locked: 0

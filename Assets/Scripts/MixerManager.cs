@@ -34,7 +34,15 @@ public class MixerManager : MonoBehaviour
 
     private void SetMixerVolume(string channel, float value)
     {
-        mixer.SetFloat(channel, value);
+        if(value >= -39)
+        {
+            mixer.SetFloat(channel, value);
+        }
+        else
+        {
+            mixer.SetFloat(channel, -80);
+        }
+        
     }
 
     private void InitializeSlider(Slider slider, string channel)
