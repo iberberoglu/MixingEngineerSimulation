@@ -11,12 +11,17 @@ public class MixTasksManager : MonoBehaviour
     [SerializeField] private MixerControl mixerControl;
     [SerializeField] private int randomTaskDayMin = 1;
     [SerializeField] private int randomTaskDayMax = 3;
+    [SerializeField] private Button accceptButton;
+    
+    private MixTasks selectedTask = null; // Seçili olan görev
+    private Button selectedButton = null; // Seçili olan buton
+
 
     private int currentDay = 1; // Mevcut gün
     private int nextTaskDay; // Rastgele bir gün sonra görev eklemek için
     private List<Button> taskButtons = new List<Button>();
     
-    public bool isTaskSelected = false;
+    public bool isTaskActive = false;
     
     
 
@@ -25,6 +30,9 @@ public class MixTasksManager : MonoBehaviour
         // İlk gün kontrolü ve görev ekleme
         nextTaskDay = currentDay; // İlk görev ekleme günü belirlenir
         UpdateTasks(GameTimeManager.Instance.GetCurrentDay());
+        
+        // Accept butonuna dinleyici ekle
+        accceptButton.onClick.AddListener(OnAcceptButtonClicked);
     }
 
     private void Update()
@@ -93,29 +101,62 @@ public class MixTasksManager : MonoBehaviour
         {
             buttonComponent.onClick.AddListener(() =>
             {
-                if (isTaskSelected)
+                if (isTaskActive)
                 {
-                    Debug.LogWarning("Bir görev zaten seçili. Yeni görev seçilemez!");
+                    // Bir görev zaten aktif durumda, uyarı mesajı göster
+                    Debug.LogWarning("Bir görev zaten aktif durumda! Yeni görev seçilemez.");
+                    return;
                 }
-                else
+                if (selectedButton != null)
                 {
-                    OnTaskButtonClicked(task);
+                    // Önceki seçili butonun seçilme durumunu kaldır
+                    selectedButton.interactable = true; // Buton aktif hale getirilir
+                    selectedButton.image.color = Color.white; // Buton rengi beyaza döner
                 }
+
+                // Yeni seçili butonu ve task'ı ayarla
+                selectedTask = task;
+                selectedButton = buttonComponent;
+
+                // Seçilen butonun rengini "Selected" duruma getir
+                buttonComponent.interactable = false; // Selected state'e geçiş yapar
+                selectedButton.image.color = Color.green; // Buton rengi beyaza döner
+                Debug.Log($"Task seçildi: {task.taskName}, ancak henüz aktif değil. Accept butonuna basılmalı.");
             });
+
         }
 
         // Listeye ekle
         taskButtons.Add(buttonComponent);
     }
-
-
-    private void OnTaskButtonClicked(MixTasks task)
+    
+    private void OnAcceptButtonClicked()
     {
-        isTaskSelected = true;
-        Debug.Log($"Görev Seçildi: {task.taskName}");
-        
-        mixerControl.setSong(task.song.songIndex);
-        RemoveTaskButton(task);
+        if (isTaskActive)
+        {
+            // Bir görev zaten aktif durumda, uyarı mesajı göster
+            Debug.LogWarning("Bir görev zaten aktif durumda! Yeni görev seçilemez.");
+            return;
+        }
+        if (selectedTask != null && selectedButton != null)
+        {
+            Debug.Log($"Görev aktif edildi: {selectedTask.taskName}");
+            isTaskActive = true;
+
+            // Şarkıyı çalmaya başlat
+            mixerControl.setSong(selectedTask.song.songIndex);
+
+            // Görev butonunu kaldır
+            RemoveTaskButton(selectedTask);
+
+            // Seçili task ve butonu sıfırla
+            selectedTask = null;
+            selectedButton = null;
+        }
+        else
+        {
+            Debug.LogWarning("Hiçbir görev seçilmedi. Accept butonuna basılmadan önce bir görev seçmelisiniz.");
+        }
     }
 
     public void RemoveTaskButton(MixTasks task)
@@ -128,4 +169,20 @@ public class MixTasksManager : MonoBehaviour
             Destroy(buttonToRemove.gameObject);
         }
     }
+    
+    public void OnCompleteTaskButtonClicked()
+    {
+        // Görev aktifliğini sıfırla
+        
+
+        // MixerControl'deki şarkıları sıfırla
+        mixerControl.setSongEmpty();
+        isTaskActive = false;
+
+        Debug.Log("Görev tamamlandı. Görev durumu sıfırlandı ve mixer kontrolü temizlendi.");
+    }
+
+    // Slider'ları sıfırlamak için bir yardımcı metod
+
+
 }

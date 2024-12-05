@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using FMODUnity;
 using FMOD.Studio;
 using System.Collections.Generic;
+using TMPro;
 
 public class MixerControl : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class MixerControl : MonoBehaviour
 
     [SerializeField] private Songs songsSO; // Scriptable Object referansı
     [SerializeField] private List<Songs> songList = new List<Songs>(); // Scriptable Object listesi
+    [SerializeField] private List<TextMeshProUGUI> channelNames = new List<TextMeshProUGUI>(); // Kanal isimleri
+    
+    [SerializeField] PlayPauseImageChange playPauseImageChange;
+    
+    [SerializeField] MeteringDisplay meteringDisplay;
 
     public EventInstance track1 { get; private set; }
     public EventInstance track2 { get; private set; }
@@ -46,10 +52,70 @@ public class MixerControl : MonoBehaviour
     public void setSong(int index)
     {
         songsSO = songList[index];
-        if (!songsSO.channel1Event.IsNull) track1 = RuntimeManager.CreateInstance(songsSO.channel1Event);
-        if (!songsSO.channel2Event.IsNull) track2 = RuntimeManager.CreateInstance(songsSO.channel2Event);
-        if (!songsSO.channel3Event.IsNull) track3 = RuntimeManager.CreateInstance(songsSO.channel3Event);
-        if (!songsSO.channel4Event.IsNull) track4 = RuntimeManager.CreateInstance(songsSO.channel4Event);
+        
+        if (!songsSO.channel1Event.IsNull)
+        {
+            track1 = RuntimeManager.CreateInstance(songsSO.channel1Event);
+            SetVolume(track1, songsSO.channelVolumeStart); // Initialize gain with slider value
+            slider1.value = songsSO.channelVolumeStart;
+            channelNames[0].text = songsSO.channelNames[0];
+        }
+        if (!songsSO.channel2Event.IsNull)
+        {
+            track2 = RuntimeManager.CreateInstance(songsSO.channel2Event);
+            SetVolume(track2, songsSO.channelVolumeStart);
+            slider2.value = songsSO.channelVolumeStart;
+            channelNames[1].text = songsSO.channelNames[1];
+        }
+        if (!songsSO.channel3Event.IsNull)
+        {
+            track3 = RuntimeManager.CreateInstance(songsSO.channel3Event);
+            SetVolume(track3, songsSO.channelVolumeStart);
+            slider3.value = songsSO.channelVolumeStart;
+            channelNames[2].text = songsSO.channelNames[2];
+        }
+        if (!songsSO.channel4Event.IsNull)
+        {
+            track4 = RuntimeManager.CreateInstance(songsSO.channel4Event);
+            SetVolume(track4, songsSO.channelVolumeStart);
+            slider4.value = songsSO.channelVolumeStart;
+            channelNames[3].text = songsSO.channelNames[3];
+        }
+        
+        meteringDisplay.ResetMetering(track1, track2, track3, track4);
+    }
+
+    public void setSongEmpty()
+    {
+        if (isPlaying)
+        {
+           PauseTrack(track1);
+           PauseTrack(track2);
+           PauseTrack(track3);
+           PauseTrack(track4); 
+        } 
+        isPlaying = false;
+        playPauseImageChange.SetPlayImage();
+        
+        
+        if (track1.isValid()) track1.release();
+        if (track2.isValid()) track2.release();
+        if (track3.isValid()) track3.release();
+        if (track4.isValid()) track4.release();
+
+        track1 = default;
+        track2 = default;
+        track3 = default;
+        track4 = default;
+        
+        slider1.value = 0.5f;
+        slider2.value = 0.5f;
+        slider3.value = 0.5f;
+        slider4.value = 0.5f;
+
+        Debug.Log("Mixer kontrolü sıfırlandı, track'ler temizlendi.");
+        
+        meteringDisplay.ResetMetering(default, default, default, default);
     }
     
 

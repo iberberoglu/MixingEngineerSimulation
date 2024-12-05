@@ -14,25 +14,30 @@ public class BedInteraction : MonoBehaviour
     {
         if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
         {
-                StartCoroutine(SleepRoutine());
+            StartCoroutine(SleepRoutine());
         }
     }
 
     private IEnumerator SleepRoutine()
     {
+        // Zamanı durdur
+        Time.timeScale = 0f;
         
         // Ekranı karart
         fadePanel.SetActive(true);
         playerController.SetMovementEnabled(false); // Hareketi kontrol et
-        yield return new WaitForSeconds(1f); // Ekran kararma süresi
+        yield return new WaitForSecondsRealtime(1f); // Ekran kararma süresi
 
         // Zamanı atlat
         GameTimeManager.Instance.AddHours(sleepDuration);
 
         // Ekranı geri aç
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
         fadePanel.SetActive(false);
         playerController.SetMovementEnabled(true); // Hareketi kontrol et
+        
+        // Zamanı tekrar başlat
+        Time.timeScale = 1f;
     }
     
     private void OnCollisionEnter2D(Collision2D other) {

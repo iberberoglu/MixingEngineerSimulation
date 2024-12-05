@@ -37,9 +37,27 @@ public class MeteringDisplay : MonoBehaviour
         for (int i = 0; i < dsps.Length; i++)
         {
             float dbLevel = GetSmoothedPeakLevel(dsps[i], peakValueQueues[i]);
-            images[i].sprite = GetSpriteForDb(dbLevel);
+            images[i].sprite = GetSpriteForDb(dbLevel); 
         }
     }
+    
+    public void ResetMetering(EventInstance newTrack1, EventInstance newTrack2, EventInstance newTrack3, EventInstance newTrack4)
+    {
+        // ChannelGroup ve DSP'leri temizle
+        for (int i = 0; i < channelGroups.Length; i++)
+        {
+            channelGroups[i] = default;
+            dsps[i] = default;
+            peakValueQueues[i].Clear(); // Kuyrukları sıfırla
+        }
+
+        // Yeni track'leri bağla
+        EnsureChannelGroupAndDSP(newTrack1, ref channelGroups[0], ref dsps[0]);
+        EnsureChannelGroupAndDSP(newTrack2, ref channelGroups[1], ref dsps[1]);
+        EnsureChannelGroupAndDSP(newTrack3, ref channelGroups[2], ref dsps[2]);
+        EnsureChannelGroupAndDSP(newTrack4, ref channelGroups[3], ref dsps[3]);
+    }
+
 
     private void EnsureChannelGroupAndDSP(EventInstance track, ref ChannelGroup channelGroup, ref DSP dsp)
     {
