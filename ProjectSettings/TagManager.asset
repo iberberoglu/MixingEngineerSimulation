@@ -47,3 +47,24 @@ TagManager:
   - name: Fader
     uniqueID: 357746915
     locked: 0
+  - name: Floor
+    uniqueID: 1147395979
+    locked: 0
+  - name: 'Walls '
+    uniqueID: 2481663867
+    locked: 0
+  - name: Furniture
+    uniqueID: 2810196851
+    locked: 0
+  - name: Player
+    uniqueID: 3541733603
+    locked: 0
+  - name: Ceiling
+    uniqueID: 2472795165
+    locked: 0
+  - name: Tile Background
+    uniqueID: 1804617815
+    locked: 0
+  - name: Ceiling (Bottom)
+    uniqueID: 1944933333
+    locked: 0

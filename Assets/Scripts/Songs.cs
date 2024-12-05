@@ -8,5 +8,6 @@ public class Songs : ScriptableObject
     public EventReference channel2Event;
     public EventReference channel3Event;
     public EventReference channel4Event;
+    public int songIndex; // Şarkı indexi
     public string songName; // Şarkı adı
 }

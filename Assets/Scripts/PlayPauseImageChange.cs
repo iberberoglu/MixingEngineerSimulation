@@ -10,15 +10,24 @@ public class PlayPauseImageChange : MonoBehaviour
     [SerializeField] Image imageComponent;
     [SerializeField] MixerControl mixerControl;
     
+    [SerializeField] MixTasksManager mixTasksManager;
+    
     public void ChangeImage()
     {
-        if(mixerControl.isPlaying)
+        if(mixTasksManager.isTaskSelected)
         {
-            imageComponent.sprite = playImage;
+            if(mixerControl.isPlaying)
+            {
+                imageComponent.sprite = playImage;
+            }
+            else
+            {
+                imageComponent.sprite = pauseImage;    
+            }
         }
         else
         {
-            imageComponent.sprite = pauseImage;    
+            Debug.Log("Please select a task first!");
         }
     }
 }

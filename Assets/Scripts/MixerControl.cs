@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using FMODUnity;
 using FMOD.Studio;
+using System.Collections.Generic;
 
 public class MixerControl : MonoBehaviour
 {
@@ -11,7 +12,8 @@ public class MixerControl : MonoBehaviour
     [SerializeField] private Slider slider4;
     [SerializeField] private Button playButton;
 
-    [SerializeField] private Songs songs; // Scriptable Object referansı
+    [SerializeField] private Songs songsSO; // Scriptable Object referansı
+    [SerializeField] private List<Songs> songList = new List<Songs>(); // Scriptable Object listesi
 
     public EventInstance track1 { get; private set; }
     public EventInstance track2 { get; private set; }
@@ -20,15 +22,11 @@ public class MixerControl : MonoBehaviour
 
 
     public bool isPlaying { get; private set; } = false;
+    
+    [SerializeField] MixTasksManager mixTasksManager;
 
     void Start()
     {
-        // Scriptable Object içeriğini kullanarak EventInstance oluştur
-        if (!songs.channel1Event.IsNull) track1 = RuntimeManager.CreateInstance(songs.channel1Event);
-        if (!songs.channel2Event.IsNull) track2 = RuntimeManager.CreateInstance(songs.channel2Event);
-        if (!songs.channel3Event.IsNull) track3 = RuntimeManager.CreateInstance(songs.channel3Event);
-        if (!songs.channel4Event.IsNull) track4 = RuntimeManager.CreateInstance(songs.channel4Event);
-
         // Play button'a tıklama olayını tanımla
         playButton.onClick.AddListener(TogglePlayPause);
 
@@ -44,6 +42,16 @@ public class MixerControl : MonoBehaviour
         slider3.value = 0.5f;
         slider4.value = 0.5f;
     }
+    
+    public void setSong(int index)
+    {
+        songsSO = songList[index];
+        if (!songsSO.channel1Event.IsNull) track1 = RuntimeManager.CreateInstance(songsSO.channel1Event);
+        if (!songsSO.channel2Event.IsNull) track2 = RuntimeManager.CreateInstance(songsSO.channel2Event);
+        if (!songsSO.channel3Event.IsNull) track3 = RuntimeManager.CreateInstance(songsSO.channel3Event);
+        if (!songsSO.channel4Event.IsNull) track4 = RuntimeManager.CreateInstance(songsSO.channel4Event);
+    }
+    
 
     private void TogglePlayPause()
     {
@@ -54,7 +62,6 @@ public class MixerControl : MonoBehaviour
             PauseTrack(track3);
             PauseTrack(track4);
             isPlaying = false;
-            UpdatePlayButtonUI(); // UI güncelle
         }
         else
         {
@@ -63,14 +70,9 @@ public class MixerControl : MonoBehaviour
             StartTrack(track3);
             StartTrack(track4);
             isPlaying = true;
-            UpdatePlayButtonUI(); // UI güncelle
         }
     }
 
-    private void UpdatePlayButtonUI()
-    {
-        // Düğme ikonunu değiştirme kodu buraya eklenebilir (örneğin, Play/Pause ikonları arasında geçiş yapın)
-    }
 
     private void StartTrack(EventInstance track)
     {
