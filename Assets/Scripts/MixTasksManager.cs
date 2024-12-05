@@ -89,28 +89,33 @@ public class MixTasksManager : MonoBehaviour
         }
 
         // Butona tıklama olayını ekle
-        if(buttonComponent != null && !isTaskSelected)
+        if (buttonComponent != null)
         {
-            buttonComponent.onClick.AddListener(() => OnTaskButtonClicked(task, buttonComponent));
+            buttonComponent.onClick.AddListener(() =>
+            {
+                if (isTaskSelected)
+                {
+                    Debug.LogWarning("Bir görev zaten seçili. Yeni görev seçilemez!");
+                }
+                else
+                {
+                    OnTaskButtonClicked(task);
+                }
+            });
         }
-        else
-        {
-            Debug.Log("You already selected a task!");    
-        }
-        
+
         // Listeye ekle
         taskButtons.Add(buttonComponent);
     }
 
-    private void OnTaskButtonClicked(MixTasks task, Button clickedButton)
+
+    private void OnTaskButtonClicked(MixTasks task)
     {
-        Debug.Log($"Görev Seçildi: {task.taskName}");
         isTaskSelected = true;
-
-        // Butonu devre dışı bırak
-        clickedButton.interactable = false;
-
+        Debug.Log($"Görev Seçildi: {task.taskName}");
+        
         mixerControl.setSong(task.song.songIndex);
+        RemoveTaskButton(task);
     }
 
     public void RemoveTaskButton(MixTasks task)
