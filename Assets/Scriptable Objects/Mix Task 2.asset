@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 739fb06e8c16241e1b4dc5a9b329bef0, type: 3}
   m_Name: Mix Task 2
   m_EditorClassIdentifier: 
-  taskName: Deneme
-  taskDescription: Deneme task 2
+  taskName: "Kafana g\xF6re yap bi\u015Feyler"
+  taskDescription: "Kafana g\xF6re"
   taskDuration: 2
   song: {fileID: 11400000, guid: 5aeca608c98424b86930ccb1f1fbb69b, type: 2}
   isCompleted: 0
-  xpReward: 100
+  experienceReward: 100
   moneyReward: 100

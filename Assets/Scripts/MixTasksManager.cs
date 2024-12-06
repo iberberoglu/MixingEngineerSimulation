@@ -12,6 +12,7 @@ public class MixTasksManager : MonoBehaviour
     [SerializeField] private int randomTaskDayMin = 1;
     [SerializeField] private int randomTaskDayMax = 3;
     [SerializeField] private Button accceptButton;
+    [SerializeField] TextMeshProUGUI currentTaskText;
     
     private MixTasks selectedTask = null; // Seçili olan görev
     private Button selectedButton = null; // Seçili olan buton
@@ -148,10 +149,11 @@ public class MixTasksManager : MonoBehaviour
 
             // Görev butonunu kaldır
             RemoveTaskButton(selectedTask);
-
-            // Seçili task ve butonu sıfırla
-            selectedTask = null;
+            
+            currentTaskText.text = "Aktif Görev: " + selectedTask.taskName;
+            
             selectedButton = null;
+
         }
         else
         {
@@ -178,8 +180,21 @@ public class MixTasksManager : MonoBehaviour
         // MixerControl'deki şarkıları sıfırla
         mixerControl.setSongEmpty();
         isTaskActive = false;
+        
+        currentTaskText.text = "Aktif Görev: Yok";
 
         Debug.Log("Görev tamamlandı. Görev durumu sıfırlandı ve mixer kontrolü temizlendi.");
+    
+        if(selectedTask != null)
+        {
+            PlayerStats.Instance.AddExperience(selectedTask.experienceReward);
+            PlayerStats.Instance.AddMoney(selectedTask.moneyReward);  
+            PlayerStatsUI.Instance.UpdateLevelText();
+            PlayerStatsUI.Instance.UpdateMoneyText();
+            PlayerStatsUI.Instance.UpdateExperienceSlider();
+        }
+        // Seçili task sıfırla
+        selectedTask = null;
     }
 
     // Slider'ları sıfırlamak için bir yardımcı metod

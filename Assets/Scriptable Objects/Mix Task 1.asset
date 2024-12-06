@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 739fb06e8c16241e1b4dc5a9b329bef0, type: 3}
   m_Name: Mix Task 1
   m_EditorClassIdentifier: 
-  taskName: Vokal fazla
-  taskDescription: "Vokal \xE7ok fazla!"
+  taskName: "Vokal \xE7ok az geliyor!"
+  taskDescription: "Vokali a\xE7."
   taskDuration: 5
   song: {fileID: 11400000, guid: e43bb7dece0144bcf8e17b6cf8852f88, type: 2}
   isCompleted: 0
-  xpReward: 10
-  moneyReward: 10
+  experienceReward: 100
+  moneyReward: 100

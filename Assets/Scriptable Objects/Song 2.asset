@@ -40,5 +40,11 @@ MonoBehaviour:
       Data3: 1481982864
       Data4: -162452276
     Path: event:/Track 2/Keyboard2
+  channelNames:
+  - Bass
+  - Drums
+  - Guitar
+  - Keyboard
   songIndex: 1
+  channelVolumeStart: 0.6
   songName: Track 2

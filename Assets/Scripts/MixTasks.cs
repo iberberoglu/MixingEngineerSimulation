@@ -10,6 +10,6 @@ public class MixTasks : ScriptableObject
     public float taskDuration;
     public Songs song;
     public bool isCompleted;
-    public float xpReward;
+    public int experienceReward;
     public float moneyReward;
 }

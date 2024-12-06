@@ -40,5 +40,11 @@ MonoBehaviour:
       Data3: -1001240913
       Data4: -90231151
     Path: event:/Track 1/Vox
+  channelNames:
+  - Bass
+  - Drums
+  - Guitar / Keyboard
+  - Vox
   songIndex: 0
+  channelVolumeStart: 0.6
   songName: Track 1
