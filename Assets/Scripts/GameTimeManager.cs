@@ -6,12 +6,14 @@ using UnityEngine.UI;
 public class GameTimeManager : MonoBehaviour
 {
     public static GameTimeManager Instance;
+    
 
     [SerializeField] private TextMeshProUGUI timeText; // UI için zaman göstergesi
     [SerializeField] private float timeScale = 10f; // 1 saniye, oyunda kaç dakika olsun?
 
     private float currentTimeInMinutes; // Dakika bazlı zamanı takip eder
     private int dayCount = 1; // Gün sayacı
+    
 
     private void Awake()
     {

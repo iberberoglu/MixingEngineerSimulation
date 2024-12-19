@@ -488,6 +488,8 @@ MonoBehaviour:
   MasterBanks:
   - Master
   Banks:
+  - Collected Sounds
+  - Moonlight
   - Track 1
   - Track2
   BanksToLoad: []

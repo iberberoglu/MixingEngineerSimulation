@@ -34,7 +34,7 @@ public class PlayerStatsUI : MonoBehaviour
     public void UpdateMoneyText()
     {
         float money = PlayerStats.Instance.money;
-        moneyText.text = $"Money: {money}";
+        moneyText.text = $"Money: {money}$";
     }
     
     public void UpdateLevelText()

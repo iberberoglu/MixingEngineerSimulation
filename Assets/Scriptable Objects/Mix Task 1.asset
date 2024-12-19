@@ -14,8 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   taskName: "Vokal \xE7ok az geliyor!"
   taskDescription: "Vokali a\xE7."
-  taskDuration: 5
+  taskDuration: 40
   song: {fileID: 11400000, guid: e43bb7dece0144bcf8e17b6cf8852f88, type: 2}
-  isCompleted: 0
+  isCompleted: 1
   experienceReward: 100
   moneyReward: 100
+  ch1IdealLevel: 60
+  ch2IdealLevel: 60
+  ch3IdealLevel: 60
+  ch4IdealLevel: 71
+  isChHasToChange: 00000001
+  tolerance: 10
+  successMessagePerfect: "Valla s\xFCper yapt\u0131n helal!"
+  successMessageSemiPerfect: "G\xFCzel olmu\u015F, daha iyi de olabilirdi..."
+  failMessage: "Ne yapt\u0131n b\xF6yle bu ne??!!"

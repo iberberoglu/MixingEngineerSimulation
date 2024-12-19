@@ -9,10 +9,11 @@ public class BedInteraction : MonoBehaviour
     [SerializeField] PlayerController playerController;
 
     private bool isPlayerNearby;
+    private bool isSleeping = false;
 
     private void Update()
     {
-        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerNearby && !isSleeping && Input.GetKeyDown(KeyCode.E))
         {
             StartCoroutine(SleepRoutine());
         }
@@ -20,12 +21,13 @@ public class BedInteraction : MonoBehaviour
 
     private IEnumerator SleepRoutine()
     {
+        isSleeping = true; // Uyuma işlemini başlat
+        playerController.SetMovementEnabled(false); // Hareketi kontrol et
         // Zamanı durdur
         Time.timeScale = 0f;
         
         // Ekranı karart
         fadePanel.SetActive(true);
-        playerController.SetMovementEnabled(false); // Hareketi kontrol et
         yield return new WaitForSecondsRealtime(1f); // Ekran kararma süresi
 
         // Zamanı atlat
@@ -34,10 +36,11 @@ public class BedInteraction : MonoBehaviour
         // Ekranı geri aç
         yield return new WaitForSecondsRealtime(1f);
         fadePanel.SetActive(false);
-        playerController.SetMovementEnabled(true); // Hareketi kontrol et
         
         // Zamanı tekrar başlat
         Time.timeScale = 1f;
+        playerController.SetMovementEnabled(true); // Hareketi kontrol et
+        isSleeping = false; // Uyuma işlemi tamamlandı
     }
     
     private void OnCollisionEnter2D(Collision2D other) {

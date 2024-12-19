@@ -12,10 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 739fb06e8c16241e1b4dc5a9b329bef0, type: 3}
   m_Name: Mix Task 2
   m_EditorClassIdentifier: 
-  taskName: "Kafana g\xF6re yap bi\u015Feyler"
-  taskDescription: "Kafana g\xF6re"
-  taskDuration: 2
+  taskName: "Davul ve Klavye \xE7ok y\xFCksek! \xD6zellikle klavye!"
+  taskDescription: "Davul ve klavye y\xFCksek."
+  taskDuration: 100
   song: {fileID: 11400000, guid: 5aeca608c98424b86930ccb1f1fbb69b, type: 2}
-  isCompleted: 0
+  isCompleted: 1
   experienceReward: 100
   moneyReward: 100
+  ch1IdealLevel: 70
+  ch2IdealLevel: 60
+  ch3IdealLevel: 70
+  ch4IdealLevel: 50
+  isChHasToChange: 00010001
+  tolerance: 9
+  successMessagePerfect: "Valla s\xFCper yapt\u0131n helal!"
+  successMessageSemiPerfect: "G\xFCzel olmu\u015F, daha iyi de olabilirdi..."
+  failMessage: "Ne yapt\u0131n b\xF6yle bu ne??!!"

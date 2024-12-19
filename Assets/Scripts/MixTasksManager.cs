@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FMODUnity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,21 +14,32 @@ public class MixTasksManager : MonoBehaviour
     [SerializeField] private int randomTaskDayMax = 3;
     [SerializeField] private Button accceptButton;
     [SerializeField] TextMeshProUGUI currentTaskText;
+    [SerializeField] private Sprite selectedButtonSprite;
+    [SerializeField] private Sprite normalButtonSprite;
+
+    [SerializeField] EventReference coinCollectedSound;
+    [SerializeField] TextMeshProUGUI completeTaskText;
+    
+    [SerializeField] GiveMixTips giveMixTips;
+    [SerializeField] ItemCosts itemCosts;
+    
+    private FMOD.Studio.EventInstance coinCollectedInstance;
     
     private MixTasks selectedTask = null; // Seçili olan görev
     private Button selectedButton = null; // Seçili olan buton
 
-
     private int currentDay = 1; // Mevcut gün
     private int nextTaskDay; // Rastgele bir gün sonra görev eklemek için
     private List<Button> taskButtons = new List<Button>();
-    
     public bool isTaskActive = false;
+    private int taskDueDay;
+    private bool isTaskDue = false;
     
     
 
     private void Start()
     {
+        coinCollectedInstance = RuntimeManager.CreateInstance(coinCollectedSound);
         // İlk gün kontrolü ve görev ekleme
         nextTaskDay = currentDay; // İlk görev ekleme günü belirlenir
         UpdateTasks(GameTimeManager.Instance.GetCurrentDay());
@@ -44,6 +56,15 @@ public class MixTasksManager : MonoBehaviour
         {
             currentDay = newDay;
             UpdateTasks(currentDay);
+        }
+        
+        // Görev süresi doldu mu kontrol et
+        if(isTaskActive)
+        {
+            if(currentDay == taskDueDay)
+            {
+                OnTaskDurationEnd();
+            }
         }
     }
 
@@ -108,28 +129,30 @@ public class MixTasksManager : MonoBehaviour
                     Debug.LogWarning("Bir görev zaten aktif durumda! Yeni görev seçilemez.");
                     return;
                 }
+
+                // Eski seçili butonu sıfırla
                 if (selectedButton != null)
                 {
-                    // Önceki seçili butonun seçilme durumunu kaldır
-                    selectedButton.interactable = true; // Buton aktif hale getirilir
-                    selectedButton.image.color = Color.white; // Buton rengi beyaza döner
+                    selectedButton.interactable = true; // Eski butonu tekrar aktif hale getir
+                    selectedButton.image.sprite = normalButtonSprite; // Normal sprite'a döndür
                 }
 
                 // Yeni seçili butonu ve task'ı ayarla
                 selectedTask = task;
                 selectedButton = buttonComponent;
 
-                // Seçilen butonun rengini "Selected" duruma getir
-                buttonComponent.interactable = false; // Selected state'e geçiş yapar
-                selectedButton.image.color = Color.green; // Buton rengi beyaza döner
+                // Seçilen butonun durumunu güncelle
+                buttonComponent.interactable = false; // Buton pasif hale getir
+                selectedButton.image.sprite = selectedButtonSprite; // Seçilen sprite'ı uygula
+
                 Debug.Log($"Task seçildi: {task.taskName}, ancak henüz aktif değil. Accept butonuna basılmalı.");
             });
-
         }
 
         // Listeye ekle
         taskButtons.Add(buttonComponent);
     }
+
     
     private void OnAcceptButtonClicked()
     {
@@ -141,10 +164,13 @@ public class MixTasksManager : MonoBehaviour
         }
         if (selectedTask != null && selectedButton != null)
         {
-            Debug.Log($"Görev aktif edildi: {selectedTask.taskName}");
+            // Görev süresini ata
+            taskDueDay = currentDay + selectedTask.taskDuration;
+            
+            Debug.Log($"Görev aktif edildi: {selectedTask.taskName} Son gün: {taskDueDay}");
             isTaskActive = true;
 
-            // Şarkıyı çalmaya başlat
+            // Şarkıyı ayarla mixerde
             mixerControl.setSong(selectedTask.song.songIndex);
 
             // Görev butonunu kaldır
@@ -153,7 +179,19 @@ public class MixTasksManager : MonoBehaviour
             currentTaskText.text = "Aktif Görev: " + selectedTask.taskName;
             
             selectedButton = null;
-
+            
+            completeTaskText.text = "";
+            
+            giveMixTips.SetToleranceArea(selectedTask.tolerance, selectedTask.ch1IdealLevel, selectedTask.ch2IdealLevel, selectedTask.ch3IdealLevel, selectedTask.ch4IdealLevel);
+            
+            if(itemCosts.isPlayerHasSpeaker)
+            {
+                giveMixTips.SetMixTipsActive(true);
+            }
+            else
+            {
+                giveMixTips.SetMixTipsActive(false);
+            }
         }
         else
         {
@@ -173,31 +211,200 @@ public class MixTasksManager : MonoBehaviour
     }
     
     public void OnCompleteTaskButtonClicked()
-    {
-        // Görev aktifliğini sıfırla
+    {  
+        // Görevi tamamla Ödülleri al.
+        CompleteTask();
         
-
         // MixerControl'deki şarkıları sıfırla
         mixerControl.setSongEmpty();
         isTaskActive = false;
         
         currentTaskText.text = "Aktif Görev: Yok";
+                
+        // Seçili task sıfırla
+        selectedTask = null;
+        
+        giveMixTips.SetMixTipsActive(false);
+    }
 
-        Debug.Log("Görev tamamlandı. Görev durumu sıfırlandı ve mixer kontrolü temizlendi.");
-    
-        if(selectedTask != null)
+    public void OnTaskDurationEnd()
+    {
+        isTaskDue = true;
+        if(isTaskDue)
         {
-            PlayerStats.Instance.AddExperience(selectedTask.experienceReward);
-            PlayerStats.Instance.AddMoney(selectedTask.moneyReward);  
+            mixerControl.setSongEmpty();
+            isTaskActive = false; 
+            currentTaskText.text = "Aktif Görev: Yok";
+            Debug.Log("Görev süresi doldu.");
+            selectedTask = null;
+            giveMixTips.SetMixTipsActive(false);
+        }
+        
+        isTaskDue = false;
+    }
+    
+    private void CompleteTask()
+    {
+        if (selectedTask != null)
+        {
+            // Initialize multipliers
+            float rewardMultiplier = 0f;
+            float criticalMultiplier = 0f; // For channels that "must change"
+            float nonCriticalMultiplier = 0f; // For other channels
+
+            // Track the count of critical and non-critical channels
+            int criticalChannels = 0;
+            int nonCriticalChannels = 0;
+            
+            bool isFactorTrue = false; 
+
+            // Iterate through each channel and calculate reward factors
+            for (int i = 0; i < 4; i++)
+            {
+                float sliderValue = 0f;
+                float idealLevel = 0f;
+                bool isCritical = selectedTask.isChHasToChange[i];
+
+                // Assign slider and ideal values dynamically based on index
+                switch (i)
+                {
+                    case 0:
+                        sliderValue = mixerControl.slider1.value;
+                        idealLevel = selectedTask.ch1IdealLevel;
+                        break;
+                    case 1:
+                        sliderValue = mixerControl.slider2.value;
+                        idealLevel = selectedTask.ch2IdealLevel;
+                        break;
+                    case 2:
+                        sliderValue = mixerControl.slider3.value;
+                        idealLevel = selectedTask.ch3IdealLevel;
+                        break;
+                    case 3:
+                        sliderValue = mixerControl.slider4.value;
+                        idealLevel = selectedTask.ch4IdealLevel;
+                        break;
+                }
+
+                // Check if the channel is out of tolerance
+                float distance = Mathf.Abs(sliderValue - idealLevel);
+                if (distance > selectedTask.tolerance)
+                {
+                    // Fail the task immediately if any channel is out of tolerance
+                    Debug.LogWarning($"Channel {i + 1} is out of tolerance. Task failed.");
+                    
+                    completeTaskText.text = selectedTask.failMessage;
+                    
+                    return; // Exit the function
+                }
+
+                // Calculate reward factor
+                float factor = CalculateRewardFactor(sliderValue, idealLevel, selectedTask.tolerance, isCritical);
+                
+                if(factor == 1)
+                {
+                    isFactorTrue = true;
+                }
+                
+                // Assign factor to the correct multiplier
+                if (isCritical)
+                {
+                    criticalMultiplier += factor;
+                    criticalChannels++;
+                }
+                else
+                {
+                    nonCriticalMultiplier += factor;
+                    nonCriticalChannels++;
+                }
+            }
+
+            // Avoid division by zero
+            if (criticalChannels > 0)
+            {
+                criticalMultiplier /= criticalChannels; // Average out critical multipliers
+            }
+            if (nonCriticalChannels > 0)
+            {
+                nonCriticalMultiplier /= nonCriticalChannels; // Average out non-critical multipliers
+            }
+
+            // Combine multipliers with weights
+            rewardMultiplier = (criticalMultiplier * 0.7f) + (nonCriticalMultiplier * 0.3f);
+            Debug.Log($"Reward multiplier: {rewardMultiplier}");
+
+            if (rewardMultiplier > 0f)
+            {
+                // Apply reward multiplier to XP and money
+                int finalXP = Mathf.RoundToInt(selectedTask.experienceReward * rewardMultiplier);
+                float finalMoney = Mathf.RoundToInt(selectedTask.moneyReward * rewardMultiplier);
+
+                PlayerStats.Instance.AddExperience(finalXP);
+                PlayerStats.Instance.AddMoney(finalMoney);
+                
+                // Görevin başarı düzeyine göre mesajı belirle
+                if(isFactorTrue)
+                {
+                    completeTaskText.text = selectedTask.successMessagePerfect;
+                }
+                else
+                {
+                    completeTaskText.text = selectedTask.successMessageSemiPerfect;
+                }
+                
+            }
+            else
+            {
+                Debug.LogWarning("Task failed! No rewards.");
+                completeTaskText.text = selectedTask.failMessage;
+            }
+
+            // Update UI
             PlayerStatsUI.Instance.UpdateLevelText();
             PlayerStatsUI.Instance.UpdateMoneyText();
             PlayerStatsUI.Instance.UpdateExperienceSlider();
-        }
-        // Seçili task sıfırla
-        selectedTask = null;
-    }
 
-    // Slider'ları sıfırlamak için bir yardımcı metod
+            // Mark task as completed
+            selectedTask.isCompleted = true;
+        }
+}
+
+
+
+
+
+    
+    private float CalculateRewardFactor(float sliderValue, float idealLevel, float tolerance, bool isCritical)
+    {
+        float distance = Mathf.Abs(sliderValue - idealLevel);
+
+        // High penalty for critical channels
+        if (isCritical)
+        {
+            if (distance < tolerance / 4)
+            {
+                return 1f; // Perfect match
+            }
+            else if (distance > tolerance)
+            {
+                return 0f; // Completely out of tolerance
+            }
+            return 1f - (distance / tolerance); // Gradual penalty
+        }
+        else
+        {
+            // Lower impact for non-critical channels
+            if (distance < tolerance / 4)
+            {
+                return 0.5f; // Perfect match, but less impact
+            }
+            else if (distance > tolerance)
+            {
+                return 0f; // Out of tolerance
+            }
+            return 0.5f - (distance / (2 * tolerance)); // Reduced penalty for non-critical
+        }
+    }
 
 
 }

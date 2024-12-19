@@ -7,10 +7,10 @@ using TMPro;
 
 public class MixerControl : MonoBehaviour
 {
-    [SerializeField] private Slider slider1;
-    [SerializeField] private Slider slider2;
-    [SerializeField] private Slider slider3;
-    [SerializeField] private Slider slider4;
+    [SerializeField] public Slider slider1;
+    [SerializeField] public Slider slider2;
+    [SerializeField] public Slider slider3;
+    [SerializeField] public Slider slider4;
     [SerializeField] private Button playButton;
 
     [SerializeField] private Songs songsSO; // Scriptable Object referansı
@@ -108,10 +108,10 @@ public class MixerControl : MonoBehaviour
         track3 = default;
         track4 = default;
         
-        slider1.value = 0.5f;
-        slider2.value = 0.5f;
-        slider3.value = 0.5f;
-        slider4.value = 0.5f;
+        slider1.value = 50f;
+        slider2.value = 50f;
+        slider3.value = 50f;
+        slider4.value = 50f;
 
         Debug.Log("Mixer kontrolü sıfırlandı, track'ler temizlendi.");
         
@@ -169,12 +169,17 @@ public class MixerControl : MonoBehaviour
     {
         if (!track.isValid()) return;
 
-        // Slider değeri (0-1) aralığından FMOD parametre aralığına (-80, 10) dönüştürülüyor
-        float volume = Mathf.LerpUnclamped(-80f, 10f, value);
-        volume = Mathf.Clamp(volume, -80f, 10f);
-        
+        // Slider değerini normalize et ve 0-1 arasında sınırla
+        float normalizedValue = Mathf.Clamp01(value / 100f);
+
+        // FMOD parametre aralığına dönüştür
+        float volume = Mathf.Lerp(-80f, 10f, normalizedValue);
+
+        // FMOD parametresini ayarla
         track.setParameterByName("Gain", volume);
+
     }
+
 
     void OnDestroy()
     {
