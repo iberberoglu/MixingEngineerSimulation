@@ -106,3 +106,6 @@ fmod_editor.log
 # kaldırılabilir.
 !/[Aa]ssets/StreamingAssets/**/*.bank
 !/[Aa]ssets/StreamingAssets/**/*.bank.meta
+
+# Plastic SCM artığı (proje git'e taşındı, bu klasör kullanılmıyor)
+.plastic/

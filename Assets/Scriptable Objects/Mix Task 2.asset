@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   taskName: "Davul ve Klavye \xE7ok y\xFCksek! \xD6zellikle klavye!"
   taskDescription: "Davul ve klavye y\xFCksek."
-  taskDuration: 100
+  taskDuration: 4
   song: {fileID: 11400000, guid: 5aeca608c98424b86930ccb1f1fbb69b, type: 2}
   isCompleted: 1
-  experienceReward: 100
-  moneyReward: 100
+  experienceReward: 200
+  moneyReward: 200
   ch1IdealLevel: 70
   ch2IdealLevel: 60
   ch3IdealLevel: 70
