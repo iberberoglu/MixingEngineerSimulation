@@ -181,7 +181,7 @@ Görevleri, şarkıları ve dükkân ürünlerini **ScriptableObject** olarak tu
 Inspector'dan ekliyorum.
 
 <details>
-<summary><b>Depo yapısı</b></summary>
+<summary><b>Repo yapısı</b></summary>
 
 ```
 Assets/
@@ -219,7 +219,7 @@ git clone https://github.com/iberberoglu/MixingEngineerSimulation.git
 ```
 
 Klasörü Unity Hub'a ekle, `Assets/Scenes/MainMenu.unity` sahnesini aç ve Play'e bas. Derlenmiş FMOD
-bank'leri `Assets/StreamingAssets/` altında depoda olduğu için **oyunu çalıştırmak için FMOD Studio
+bank'leri `Assets/StreamingAssets/` altında repoda olduğu için **oyunu çalıştırmak için FMOD Studio
 gerekmiyor**, sadece sesi düzenlemek için gerekiyor.
 
 | Tuş | İşlev |
@@ -231,7 +231,7 @@ gerekmiyor**, sadece sesi düzenlemek için gerekiyor.
 > 🎹 Stüdyonun köşesinde bir piyano var. Yanına gidip `E`'ye bas.
 
 **Sesi düzenlemek** için ayrıca FMOD Studio kaynak projesi (`Producer-Simulation-FMOD.fspro`)
-gerekiyor; o bu deponun parçası değil. Ondan üretilen derlenmiş bank'ler depoda olduğu için oyun
+gerekiyor; o bu reponun parçası değil. Ondan üretilen derlenmiş bank'ler repoda olduğu için oyun
 onsuz da çalışıyor.
 
 ---
