@@ -6,12 +6,15 @@
 [![FMOD](https://img.shields.io/badge/FMOD%20Studio-2.02.25-ff6600)](https://www.fmod.com/)
 [![C#](https://img.shields.io/badge/C%23-27%20script%20·%20~2k%20sat%C4%B1r-239120?logo=csharp&logoColor=white)](Assets/Scripts)
 [![Render](https://img.shields.io/badge/URP-14.0.11%20·%202D-2196f3)](https://unity.com/srp/universal-render-pipeline)
+[![İndir](https://img.shields.io/badge/İndir-macOS%20build-2ea44f)](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest)
 
 📄 **[English README →](README.md)**
 
 Ekrandaki dört fader, FMOD event instance'larının gerçek `Gain` parametrelerini sürüyor; seviye
 göstergeleri ise FMOD'un DSP metering API'sinden canlı peak değerleri okuyor. Ses tarafı mixlemenin
 taklidi değil. Oyunun puanlamasına bağlı, çalışan bir mix.
+
+▶ **[Oynanabilir macOS sürümünü indir](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest)** (evrensel binary, Unity veya FMOD Studio gerekmiyor)
 
 ![Stüdyo](docs/screenshots/studio.png)
 
@@ -22,8 +25,9 @@ taklidi değil. Oyunun puanlamasına bağlı, çalışan bir mix.
 Bu projeyi 2025'te **İstanbul Teknik Üniversitesi, Müzik Teknolojisi** bölümündeki *Serbest Proje
 Çalışması 3* dersi için yaptım. Danışmanım Dr. Ozan Sarıer'di, Ocak 2025'te teslim ettim.
 
-Geldiğim yer ses tarafı, oyun değil. Bu projeden önce C++ ve JUCE ile bir RMS compressor plug-in'i
-yazmıştım; müzik teknolojisini etkileşimli bir şeyin *içine* koyan bir proje yapmak istedim. Bu
+Geldiğim yer ses tarafı, oyun değil. Bu projeden önce C++ ve JUCE ile
+[bir RMS compressor plug-in'i](https://github.com/iberberoglu/RmsCompressor) yazmıştım; müzik
+teknolojisini etkileşimli bir şeyin *içine* koyan bir proje yapmak istedim. Bu
 yüzden Unity ve C#'ı sıfırdan öğrendim, ses motoru olarak da FMOD'u seçtim; çünkü fikrin ihtiyaç
 duyduğu şey kanal bazında DAW seviyesinde kontroldü.
 
@@ -189,6 +193,17 @@ docs/screenshots/            Bu README'de kullanılan görseller
 
 ## Çalıştırmak
 
+### Sadece oynamak istiyorsan
+
+[Son sürümü indir](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest).
+Evrensel bir macOS build'i, hem Apple Silicon hem Intel Mac'lerde çalışıyor; Unity de FMOD Studio da
+gerekmiyor.
+
+Build Apple tarafından onaylanmadığı için macOS ilk açılışta engelliyor. Uygulamaya Control tuşuyla
+tıklayıp **Aç** de, ya da bir kez deneyip **Sistem Ayarları → Gizlilik ve Güvenlik**'ten izin ver.
+
+### Kaynaktan derlemek
+
 **Gereksinim:** Unity **2022.3.50f1** (tam olarak bu sürüm), Universal 2D template ile.
 
 ```bash
@@ -225,11 +240,6 @@ ekonomi, ilerleme, zaman), üstüne iki iş kadar da içerik vardı.
   dönmek yerine tamamlanmış sayılıyor.
 - **Kayıt sistemi yok.** Para, XP, seviye ve satın alınanlar oyun kapanınca sıfırlanıyor; bir
   ilerleme oyunu için en büyük yapısal eksik bu.
-- **Teslim süresi mekaniği hiç tetiklenmiyor.** Saat her gün sıfırlanırken görev bitiş zamanı mutlak
-  dakika olarak hesaplandığı için karşılaştırma hiçbir zaman sağlanmıyor. Oyunun tek zaman baskısı
-  pratikte ölü kod.
-- Bunlara ek olarak birkaç küçük sorun: hiçbir şeyi durdurmayan bir `StopCoroutine`, eski ve yeni
-  input sistemlerinin karışması, puanlama yolunda bir float eşitlik karşılaştırması.
 
 İncelemenin tamamını önceliklendirilmiş hâlde, projenin çalışma listesi olarak tutuyorum.
 

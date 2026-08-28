@@ -6,12 +6,15 @@
 [![FMOD](https://img.shields.io/badge/FMOD%20Studio-2.02.25-ff6600)](https://www.fmod.com/)
 [![C#](https://img.shields.io/badge/C%23-27%20scripts%20·%20~2k%20LOC-239120?logo=csharp&logoColor=white)](Assets/Scripts)
 [![Render](https://img.shields.io/badge/URP-14.0.11%20·%202D-2196f3)](https://unity.com/srp/universal-render-pipeline)
+[![Download](https://img.shields.io/badge/Download-macOS%20build-2ea44f)](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest)
 
 📄 **[Türkçe README →](README.tr.md)**
 
 The four faders on screen drive real `Gain` parameters on FMOD event instances, and the level meters
 read live peak values out of FMOD's DSP metering API. The audio side isn't a mock-up of mixing. It
 *is* mixing, wired straight into the game's scoring.
+
+▶ **[Download the playable macOS build](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest)** (universal binary, no Unity or FMOD Studio needed)
 
 ![Studio](docs/screenshots/studio.png)
 
@@ -23,7 +26,8 @@ I built this in 2025 for *Serbest Proje Çalışması 3* (Independent Project St
 Technical University, Music Technology**. Dr. Ozan Sarıer supervised the project and I submitted it
 in January 2025.
 
-My background is audio, not games. Before this I had written an RMS compressor plug-in in C++/JUCE,
+My background is audio, not games. Before this I had written
+[an RMS compressor plug-in in C++/JUCE](https://github.com/iberberoglu/RmsCompressor),
 and I wanted a project that put music technology *inside* something interactive, so I learned Unity
 and C# from scratch for it and brought in FMOD as the audio engine, because the concept needed
 DAW-grade control over individual channels.
@@ -189,6 +193,17 @@ docs/screenshots/            Images used by this README
 
 ## Running it
 
+### Just play it
+
+Grab the [latest release](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest).
+It's a universal macOS build, so it runs on both Apple Silicon and Intel, and it needs neither Unity
+nor FMOD Studio.
+
+The build isn't notarised by Apple, so macOS blocks it on the first launch. Control-click the app
+and choose **Open**, or open it once and then allow it from **System Settings → Privacy & Security**.
+
+### Build from source
+
 **Requirements:** Unity **2022.3.50f1** (this exact version) with the Universal 2D template.
 
 ```bash
@@ -225,11 +240,6 @@ Coming back to the code in 2026, I reviewed it properly and wrote the findings d
   marked completed rather than returning to the pool.
 - **No save system.** Money, XP, level and purchases reset when the game closes, which is the single
   largest structural gap for a progression game.
-- **The deadline mechanic never fires.** The clock resets to zero each day while job deadlines are
-  computed as absolute minutes, so the comparison never triggers. The game's only time pressure is
-  effectively dead code.
-- Plus a handful of smaller issues: a `StopCoroutine` that stops nothing, mixed old and new input
-  systems, a float equality comparison in the scoring path.
 
 I keep the full review, prioritised, as the working backlog for the project.
 

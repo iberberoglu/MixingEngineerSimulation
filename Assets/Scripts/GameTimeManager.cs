@@ -38,13 +38,10 @@ public class GameTimeManager : MonoBehaviour
 
     private void UpdateGameTime()
     {
+        // Zaman mutlak ilerler, gün ondan türetilir. Saati her gün sıfırlarsak
+        // görevlerin mutlak bitiş zamanına (MixTasksManager) hiç ulaşılamıyor.
         currentTimeInMinutes += Time.deltaTime * timeScale;
-
-        if (currentTimeInMinutes >= 1440) // 1440 dakika = 1 gün
-        {
-            currentTimeInMinutes = 0;
-            dayCount++;
-        }
+        dayCount = (int)(currentTimeInMinutes / 1440) + 1; // 1440 dakika = 1 gün
     }
 
     private void UpdateUI()
@@ -65,12 +62,8 @@ public class GameTimeManager : MonoBehaviour
 
     public void AddHours(int hours)
     {
+        // dayCount'u UpdateGameTime türetiyor, burada elle artırmaya gerek yok
         currentTimeInMinutes += hours * 60;
-        if (currentTimeInMinutes >= 1440)
-        {
-            currentTimeInMinutes -= 1440;
-            dayCount++;
-        }
     }
 
     public int GetCurrentDay() => dayCount;

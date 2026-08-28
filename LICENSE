@@ -1,0 +1,62 @@
+MIT License
+
+Copyright (c) 2025 İsmail Berberoğlu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+================================================================================
+SCOPE: what this license does and does not cover
+================================================================================
+
+The MIT license above covers the SOURCE CODE I wrote, which is everything under
+`Assets/Scripts/`.
+
+It does NOT cover the third-party material bundled in this repository. Each of
+the following stays under its own terms:
+
+  FMOD Studio Unity Integration   Assets/Plugins/FMOD/
+                                  © Firelight Technologies Pty Ltd.
+                                  See Assets/Plugins/FMOD/LICENSE.txt.
+                                  FMOD requires a separate licence for
+                                  commercial use.
+
+  Unity packages                  Packages/, Assets/TextMesh Pro/
+                                  © Unity Technologies, under the Unity
+                                  Package Distribution terms.
+
+  Free art asset packs            Assets/Sprites/Characters_free/
+                                  Assets/Sprites/Interiors_free/
+                                  Assets/Sprites/Complete_UI_Essential_Pack_Free/
+                                  Assets/Sprites/sierrassets furniture pack/
+                                  Each under the terms of its own pack.
+
+  Fonts                           Assets/Fonts/
+                                  Under their respective licences.
+
+  Music and audio                 Assets/StreamingAssets/*.bank
+                                  © İsmail Berberoğlu, all rights reserved.
+                                  Not covered by the MIT licence above.
+
+KNOWN ISSUE: the player character sprite
+(`Assets/Sprites/PC Computer - Stardew Valley - Shane.png`) is taken from
+Stardew Valley, © ConcernedApe LLC. It entered the project as a prototyping
+placeholder and is NOT licensed for redistribution by me. Replacing it with a
+free-licensed character is the top item on the project backlog. Until then, do
+not reuse that file, and be aware that the published build contains it.
