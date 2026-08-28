@@ -245,8 +245,11 @@ the progression stick.
 
 - **Code, game design, FMOD project, audio:** İsmail Berberoğlu
 - **Mixing console and custom pixel art:** I made these in Photoshop together with a friend
-- **Character, interior and UI sprites:** free asset packs (Characters_free, Interiors_free,
-  Complete UI Essential Pack, sierrassets furniture pack), each under its own licence
+- **Interior, UI and furniture sprites:** free asset packs (Interiors_free, Complete UI Essential
+  Pack, sierrassets furniture pack, Characters_free), each under its own licence
+- **Player character sprite:** currently a placeholder taken from Stardew Valley (© ConcernedApe).
+  It came in while prototyping and is not licensed for redistribution. Replacing it with a
+  free-licensed character is the top item on my backlog.
 - **Supervisor:** Dr. Ozan Sarıer, İTÜ Music Technology
 
 Built with [Unity](https://unity.com/) · [FMOD Studio](https://www.fmod.com/) by Firelight

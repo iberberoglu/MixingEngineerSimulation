@@ -245,8 +245,11 @@ ilerlemeyi kalıcı kılacak bir kayıt sistemi.
 
 - **Kod, oyun tasarımı, FMOD projesi, ses:** İsmail Berberoğlu
 - **Mix konsolu ve özel pixel art:** bir arkadaşımla birlikte Photoshop'ta hazırladık
-- **Karakter, iç mekân ve arayüz sprite'ları:** ücretsiz asset paketleri (Characters_free,
-  Interiors_free, Complete UI Essential Pack, sierrassets furniture pack), her biri kendi lisansıyla
+- **İç mekân, arayüz ve mobilya sprite'ları:** ücretsiz asset paketleri (Interiors_free, Complete UI
+  Essential Pack, sierrassets furniture pack, Characters_free), her biri kendi lisansıyla
+- **Oyuncu karakteri sprite'ı:** şu an Stardew Valley'den alınmış geçici bir yer tutucu
+  (© ConcernedApe). Prototip aşamasında girdi, yeniden dağıtım için lisanslı değil. Ücretsiz
+  lisanslı bir karakterle değiştirmek yapılacaklar listemin ilk maddesi.
 - **Danışman:** Dr. Ozan Sarıer, İTÜ Müzik Teknolojisi
 
 [Unity](https://unity.com/) · Firelight Technologies'in [FMOD Studio](https://www.fmod.com/)'su ·
