@@ -13,15 +13,22 @@ public class StoreManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI notEnoughMoneyText;
     [SerializeField] GiveMixTips giveMixTips;
     [SerializeField] MixTasksManager mixTasksManager;
-
+    [SerializeField] List<TextMeshProUGUI> itemDescriptionText;
+    
     private Coroutine notEnoughMoneyCoroutine; // Coroutine referansı
 
     private void Start()
     {
+        for (int i = 0; i < itemCosts.items.Count; i++)
+        {
+            itemDescriptionText[i].text = itemCosts.items[i].description;
+        }
+        
         // Tüm butonları döngü ile tıklama olaylarına bağla
         for (int i = 0; i < buyButtons.Count; i++)
         {
             int index = i; // Local değişkenle index tut
+            
             buyButtons[i].onClick.AddListener(() => OnBuyButtonClicked(index));
         }
         priceTexts.ForEach(priceText => priceText.text = itemCosts.items[priceTexts.IndexOf(priceText)].price.ToString() + "$");
@@ -59,23 +66,41 @@ public class StoreManager : MonoBehaviour
             buyButtons[buttonIndex].interactable = false;
             priceTexts[buttonIndex].text = "Satın Alındı!";
 
-            itemCosts.isPlayerHasSpeaker = true;
+            // Speaker satın alma mantığı
             if(item.itemName == "Speaker 1")
             {
-                giveMixTips.howMuchTipsToGive = 30;
-                Debug.Log("Speaker 1 satın alındı!");
+                // Eğer Speaker 2 alınmamışsa Speaker 1'in ayarlarını kullan
+                if (!itemCosts.items.Find(x => x.itemName == "Speaker 2").isPurchased)
+                {
+                    giveMixTips.howMuchTipsToGive = 40;
+                    Debug.Log("Speaker 1 satın alındı ve aktif!");
+                }
             }
             else if(item.itemName == "Speaker 2")
             {
-                giveMixTips.howMuchTipsToGive = 20;
-                Debug.Log("Speaker 2 satın alındı!");
+                giveMixTips.howMuchTipsToGive = 30;
+                Debug.Log("Speaker 2 satın alındı ve aktif!");
             }
+
+            // En az bir hoparlör satın alındıysa
+            itemCosts.isPlayerHasSpeaker = true;
             
-            if(itemCosts.isPlayerHasSpeaker && mixTasksManager.isTaskActive)
+            // Eğer aktif görev varsa tolerance area'yı ayarla
+            if(mixTasksManager.isTaskActive && mixTasksManager.selectedTask != null)
             {
-                giveMixTips.SetMixTipsActive(true);    
+                giveMixTips.SetMixTipsActive(true);
+                giveMixTips.SetToleranceArea(
+                    mixTasksManager.selectedTask.tolerance,
+                    mixTasksManager.selectedTask.ch1IdealLevel,
+                    mixTasksManager.selectedTask.ch2IdealLevel,
+                    mixTasksManager.selectedTask.ch3IdealLevel,
+                    mixTasksManager.selectedTask.ch4IdealLevel
+                );
             }
-            
+            else
+            {
+                giveMixTips.SetMixTipsActive(false);
+            }
         }
         else
         {
@@ -106,5 +131,20 @@ public class StoreManager : MonoBehaviour
 
         // Coroutine'i sıfırla
         notEnoughMoneyCoroutine = null;
+    }
+
+    // Speaker durumunu kontrol eden yeni method
+    public void UpdateSpeakerSettings()
+    {
+        // Speaker 2 alınmışsa onun ayarlarını kullan
+        if (itemCosts.items.Find(x => x.itemName == "Speaker 2").isPurchased)
+        {
+            giveMixTips.howMuchTipsToGive = 30;
+        }
+        // Sadece Speaker 1 alınmışsa onun ayarlarını kullan
+        else if (itemCosts.items.Find(x => x.itemName == "Speaker 1").isPurchased)
+        {
+            giveMixTips.howMuchTipsToGive = 40;
+        }
     }
 }

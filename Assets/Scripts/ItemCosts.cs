@@ -16,4 +16,6 @@ public class Item
     public Sprite itemImage;
     public float price;
     public bool isPurchased;
+    [TextArea(3, 10)]
+    public string description;
 }

@@ -55,4 +55,6 @@ public class PlayerController : MonoBehaviour
             moveDirection = value.Get<Vector2>();
         }
     }
+    
+    
 }

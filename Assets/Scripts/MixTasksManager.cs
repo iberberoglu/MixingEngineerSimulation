@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using FMODUnity;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,25 +16,31 @@ public class MixTasksManager : MonoBehaviour
     [SerializeField] private int randomTaskDayMax = 3;
     [SerializeField] private Button accceptButton;
     [SerializeField] TextMeshProUGUI currentTaskText;
+    [SerializeField] TextMeshProUGUI completeTaskText;
+    [SerializeField] TextMeshProUGUI noTasksText; // Yeni eklenen text referansı
     [SerializeField] private Sprite selectedButtonSprite;
     [SerializeField] private Sprite normalButtonSprite;
+    [SerializeField] private GameObject canvasToDeactivate; // Yeni eklenen canvas referansı
+    [SerializeField] private PlayerController playerController; // Yeni eklenen PlayerController referansı
 
+    [SerializeField] private Button completeTaskButton;
     [SerializeField] EventReference coinCollectedSound;
-    [SerializeField] TextMeshProUGUI completeTaskText;
-    
     [SerializeField] GiveMixTips giveMixTips;
     [SerializeField] ItemCosts itemCosts;
     
+    [SerializeField] PlayPauseImageChange playPauseImageChange;
+    
     private FMOD.Studio.EventInstance coinCollectedInstance;
     
-    private MixTasks selectedTask = null; // Seçili olan görev
+    public MixTasks selectedTask { get; private set; } = null;
+
     private Button selectedButton = null; // Seçili olan buton
 
     private int currentDay = 1; // Mevcut gün
     private int nextTaskDay; // Rastgele bir gün sonra görev eklemek için
     private List<Button> taskButtons = new List<Button>();
     public bool isTaskActive = false;
-    private int taskDueDay;
+    private float taskDueTimeInMinutes; // Görevin bitiş zamanı (dakika cinsinden)
     private bool isTaskDue = false;
     
     
@@ -40,12 +48,42 @@ public class MixTasksManager : MonoBehaviour
     private void Start()
     {
         coinCollectedInstance = RuntimeManager.CreateInstance(coinCollectedSound);
-        // İlk gün kontrolü ve görev ekleme
-        nextTaskDay = currentDay; // İlk görev ekleme günü belirlenir
-        UpdateTasks(GameTimeManager.Instance.GetCurrentDay());
+        
+        // Tüm görevleri başlangıçta sıfırla
+        foreach (var task in mixTasksList)
+        {
+            task.isCompleted = false;
+        }
+        
+        // İlk görev ekleme
+        currentDay = GameTimeManager.Instance.GetCurrentDay();
+        UpdateTasks(currentDay);
         
         // Accept butonuna dinleyici ekle
         accceptButton.onClick.AddListener(OnAcceptButtonClicked);
+
+        // Complete Task butonunu başlangıçta deaktif et
+        SetCompleteButtonState(false);
+        
+        Debug.Log($"MixTasksManager Start - Mevcut Gün: {currentDay}, Toplam Görev Sayısı: {mixTasksList.Count}");
+    }
+
+    private void SetCompleteButtonState(bool interactable)
+    {
+        completeTaskButton.interactable = interactable;
+        // Butonun rengini ayarla
+        Image buttonImage = completeTaskButton.GetComponent<Image>();
+        if (buttonImage != null)
+        {
+            if (!interactable)
+            {
+                buttonImage.color = new Color(198f/255f, 198f/255f, 198f/255f);
+            }
+            else
+            {
+                buttonImage.color = Color.white;
+            }
+        }
     }
 
     private void Update()
@@ -61,40 +99,67 @@ public class MixTasksManager : MonoBehaviour
         // Görev süresi doldu mu kontrol et
         if(isTaskActive)
         {
-            if(currentDay == taskDueDay)
+            float currentTimeInMinutes = GameTimeManager.Instance.GetCurrentTimeInMinutes();
+            if(currentTimeInMinutes >= taskDueTimeInMinutes)
             {
                 OnTaskDurationEnd();
             }
         }
+
+        // Görev durumu mesajlarını güncelle
+        UpdateTaskAvailabilityMessage();
     }
 
     private void UpdateTasks(int day)
     {
-        // Sadece belirlenen gün geldiğinde yeni bir görev ekle
-        if (day == nextTaskDay)
+        // Her gün yeni bir görev ekle
+        MixTasks task = GetRandomTask();
+        if (task != null)
         {
-            // Rastgele bir görev seç
-            MixTasks task = GetRandomTask();
-            if (task != null)
-            {
-                AddTaskButton(task);
-                nextTaskDay = CalculateNextTaskDay(); // Bir sonraki görev günü belirle
-                Debug.Log($"Yeni Görev Eklendi: {task.taskName}, Sonraki Görev Günü: {nextTaskDay}");
-            }
+            AddTaskButton(task);
+            Debug.Log($"Yeni Görev Eklendi: {task.taskName}");
         }
     }
 
     private MixTasks GetRandomTask()
     {
-        // Henüz eklenmemiş bir rastgele görev seç
-        List<MixTasks> remainingTasks = mixTasksList.FindAll(t => !taskButtons.Exists(b => b.GetComponentInChildren<TextMeshProUGUI>().text == t.taskName));
-        if (remainingTasks.Count > 0)
+        Debug.Log($"GetRandomTask başladı - Toplam görev sayısı: {mixTasksList.Count}");
+        
+        // Her bir görevi kontrol et ve neden elendiğini göster
+        foreach (var task in mixTasksList)
         {
-            return remainingTasks[Random.Range(0, remainingTasks.Count)];
+            if (task.isCompleted)
+            {
+                Debug.Log($"Görev '{task.taskName}' tamamlandığı için elendi");
+            }
+            if (task == selectedTask)
+            {
+                Debug.Log($"Görev '{task.taskName}' şu an aktif görev olduğu için elendi");
+            }
+            if (taskButtons.Exists(b => b.GetComponentInChildren<TextMeshProUGUI>().text == task.taskName))
+            {
+                Debug.Log($"Görev '{task.taskName}' zaten bir butonu olduğu için elendi");
+            }
+        }
+
+        // Tamamlanmış, aktif veya butonları olan görevleri hariç tut
+        List<MixTasks> availableTasks = mixTasksList.FindAll(task => 
+            !task.isCompleted && // Tamamlanmış görevleri hariç tut
+            task != selectedTask && // Aktif görevi hariç tut
+            !taskButtons.Exists(b => b.GetComponentInChildren<TextMeshProUGUI>().text == task.taskName) // Zaten butonu olan görevleri hariç tut
+        );
+
+        Debug.Log($"Kullanılabilir görev sayısı: {availableTasks.Count}");
+        
+        if (availableTasks.Count > 0)
+        {
+            var selectedTask = availableTasks[Random.Range(0, availableTasks.Count)];
+            Debug.Log($"Seçilen görev: {selectedTask.taskName}");
+            return selectedTask;
         }
         else
         {
-            Debug.LogWarning("Tüm görevler eklenmiş!");
+            Debug.LogWarning("Eklenebilecek yeni görev kalmadı!");
             return null;
         }
     }
@@ -111,11 +176,23 @@ public class MixTasksManager : MonoBehaviour
         GameObject newButton = Instantiate(taskButtonPrefab, tasksContainer);
         Button buttonComponent = newButton.GetComponent<Button>();
 
-        // Buton metnini ayarla
+        // Ana görev metnini ayarla
         TextMeshProUGUI buttonText = newButton.GetComponentInChildren<TextMeshProUGUI>();
         if (buttonText != null)
         {
             buttonText.text = task.taskName;
+        }
+
+        // Detay metnini ayarla
+        TextMeshProUGUI detailsText = newButton.transform.Find("TaskDetails").GetComponent<TextMeshProUGUI>();
+        if (detailsText != null)
+        {
+            detailsText.text = $"Görev süresi: {task.taskDuration} gün\nÜcret: {task.moneyReward}$";
+            Debug.Log($"Details text ayarlandı: {detailsText.text}");
+        }
+        else
+        {
+            Debug.LogError("TaskDetails text componenti bulunamadı!");
         }
 
         // Butona tıklama olayını ekle
@@ -158,16 +235,31 @@ public class MixTasksManager : MonoBehaviour
     {
         if (isTaskActive)
         {
-            // Bir görev zaten aktif durumda, uyarı mesajı göster
             Debug.LogWarning("Bir görev zaten aktif durumda! Yeni görev seçilemez.");
             return;
         }
         if (selectedTask != null && selectedButton != null)
         {
-            // Görev süresini ata
-            taskDueDay = currentDay + selectedTask.taskDuration;
+            // Canvas'ı deaktif et
+            if (canvasToDeactivate != null)
+            {
+                canvasToDeactivate.SetActive(false);
+            }
+
+            // Player movement'ı aktif et
+            if (playerController != null)
+            {
+                playerController.SetMovementEnabled(true);
+            }
+
+            // Complete Task butonunu aktif et
+            SetCompleteButtonState(true);
+
+            // Görev süresini dakika cinsinden hesapla
+            float currentTimeInMinutes = GameTimeManager.Instance.GetCurrentTimeInMinutes();
+            taskDueTimeInMinutes = currentTimeInMinutes + (selectedTask.taskDuration * 24 * 60); // Günü dakikaya çevir
             
-            Debug.Log($"Görev aktif edildi: {selectedTask.taskName} Son gün: {taskDueDay}");
+            Debug.Log($"Görev aktif edildi: {selectedTask.taskName} Bitiş zamanı: {taskDueTimeInMinutes} dakika");
             isTaskActive = true;
 
             // Şarkıyı ayarla mixerde
@@ -182,16 +274,22 @@ public class MixTasksManager : MonoBehaviour
             
             completeTaskText.text = "";
             
+            // Tolerance area ayarları
             giveMixTips.SetToleranceArea(selectedTask.tolerance, selectedTask.ch1IdealLevel, selectedTask.ch2IdealLevel, selectedTask.ch3IdealLevel, selectedTask.ch4IdealLevel);
             
+            // Hoparlör durumunu kontrol et ve ayarla
             if(itemCosts.isPlayerHasSpeaker)
             {
+                // StoreManager'dan speaker ayarlarını güncelle
+                FindObjectOfType<StoreManager>().UpdateSpeakerSettings();
                 giveMixTips.SetMixTipsActive(true);
             }
             else
             {
                 giveMixTips.SetMixTipsActive(false);
             }
+            
+            playPauseImageChange.pleaseSelectTaskPanel.SetActive(false);
         }
         else
         {
@@ -212,6 +310,9 @@ public class MixTasksManager : MonoBehaviour
     
     public void OnCompleteTaskButtonClicked()
     {  
+        // Complete Task butonunu deaktif et
+        SetCompleteButtonState(false);
+
         // Görevi tamamla Ödülleri al.
         CompleteTask();
         
@@ -232,10 +333,21 @@ public class MixTasksManager : MonoBehaviour
         isTaskDue = true;
         if(isTaskDue)
         {
+            // Complete Task butonunu deaktif et
+            SetCompleteButtonState(false);
+
             mixerControl.setSongEmpty();
             isTaskActive = false; 
             currentTaskText.text = "Aktif Görev: Yok";
-            Debug.Log("Görev süresi doldu.");
+            completeTaskText.text = "Görev süresi doldu!";
+            
+            // Süresi dolsa bile görevi tamamlandı olarak işaretle
+            if (selectedTask != null)
+            {
+                selectedTask.isCompleted = true;
+                Debug.Log($"Görev '{selectedTask.taskName}' süresi dolduğu için tamamlandı olarak işaretlendi");
+            }
+            
             selectedTask = null;
             giveMixTips.SetMixTipsActive(false);
         }
@@ -249,8 +361,8 @@ public class MixTasksManager : MonoBehaviour
         {
             // Initialize multipliers
             float rewardMultiplier = 0f;
-            float criticalMultiplier = 0f; // For channels that "must change"
-            float nonCriticalMultiplier = 0f; // For other channels
+            float criticalMultiplier = 0f;
+            float nonCriticalMultiplier = 0f;
 
             // Track the count of critical and non-critical channels
             int criticalChannels = 0;
@@ -294,17 +406,17 @@ public class MixTasksManager : MonoBehaviour
                     Debug.LogWarning($"Channel {i + 1} is out of tolerance. Task failed.");
                     
                     completeTaskText.text = selectedTask.failMessage;
+                    StartCoroutine(HideCompleteTaskTextAfterDelay(5.0f));
+                    
+                    // Görevi başarısız olsa da tamamlandı olarak işaretle
+                    selectedTask.isCompleted = true;
+                    Debug.Log($"Görev '{selectedTask.taskName}' başarısız olarak tamamlandı");
                     
                     return; // Exit the function
                 }
 
                 // Calculate reward factor
-                float factor = CalculateRewardFactor(sliderValue, idealLevel, selectedTask.tolerance, isCritical);
-                
-                if(factor == 1)
-                {
-                    isFactorTrue = true;
-                }
+                float factor = CalculateRewardFactor(sliderValue, idealLevel, selectedTask.tolerance);
                 
                 // Assign factor to the correct multiplier
                 if (isCritical)
@@ -322,16 +434,21 @@ public class MixTasksManager : MonoBehaviour
             // Avoid division by zero
             if (criticalChannels > 0)
             {
-                criticalMultiplier /= criticalChannels; // Average out critical multipliers
+                criticalMultiplier /= criticalChannels;
             }
             if (nonCriticalChannels > 0)
             {
-                nonCriticalMultiplier /= nonCriticalChannels; // Average out non-critical multipliers
+                nonCriticalMultiplier /= nonCriticalChannels;
             }
 
             // Combine multipliers with weights
             rewardMultiplier = (criticalMultiplier * 0.7f) + (nonCriticalMultiplier * 0.3f);
             Debug.Log($"Reward multiplier: {rewardMultiplier}");
+            
+            if(rewardMultiplier == 1)
+            {
+                isFactorTrue = true;
+            }
 
             if (rewardMultiplier > 0f)
             {
@@ -342,69 +459,96 @@ public class MixTasksManager : MonoBehaviour
                 PlayerStats.Instance.AddExperience(finalXP);
                 PlayerStats.Instance.AddMoney(finalMoney);
                 
+                // Para kazanma sesi çal
+                coinCollectedInstance.start();
+                
                 // Görevin başarı düzeyine göre mesajı belirle
                 if(isFactorTrue)
                 {
                     completeTaskText.text = selectedTask.successMessagePerfect;
+                    StartCoroutine(HideCompleteTaskTextAfterDelay(5.0f));
                 }
                 else
                 {
                     completeTaskText.text = selectedTask.successMessageSemiPerfect;
+                    StartCoroutine(HideCompleteTaskTextAfterDelay(5.0f));
                 }
-                
             }
             else
             {
                 Debug.LogWarning("Task failed! No rewards.");
                 completeTaskText.text = selectedTask.failMessage;
+                StartCoroutine(HideCompleteTaskTextAfterDelay(5.0f));
             }
+
+            // Her durumda görevi tamamlandı olarak işaretle
+            selectedTask.isCompleted = true;
+            Debug.Log($"Görev '{selectedTask.taskName}' tamamlandı olarak işaretlendi");
 
             // Update UI
             PlayerStatsUI.Instance.UpdateLevelText();
             PlayerStatsUI.Instance.UpdateMoneyText();
             PlayerStatsUI.Instance.UpdateExperienceSlider();
-
-            // Mark task as completed
-            selectedTask.isCompleted = true;
-        }
-}
-
-
-
-
-
-    
-    private float CalculateRewardFactor(float sliderValue, float idealLevel, float tolerance, bool isCritical)
-    {
-        float distance = Mathf.Abs(sliderValue - idealLevel);
-
-        // High penalty for critical channels
-        if (isCritical)
-        {
-            if (distance < tolerance / 4)
-            {
-                return 1f; // Perfect match
-            }
-            else if (distance > tolerance)
-            {
-                return 0f; // Completely out of tolerance
-            }
-            return 1f - (distance / tolerance); // Gradual penalty
-        }
-        else
-        {
-            // Lower impact for non-critical channels
-            if (distance < tolerance / 4)
-            {
-                return 0.5f; // Perfect match, but less impact
-            }
-            else if (distance > tolerance)
-            {
-                return 0f; // Out of tolerance
-            }
-            return 0.5f - (distance / (2 * tolerance)); // Reduced penalty for non-critical
         }
     }
 
+
+    IEnumerator HideCompleteTaskTextAfterDelay(float delay)
+    {
+        Debug.Log("Coroutine started");
+        yield return new WaitForSeconds(delay);
+        Debug.Log("Coroutine ended");
+        completeTaskText.text = "";
+    }
+
+
+    
+    private float CalculateRewardFactor(float sliderValue, float idealLevel, float tolerance)
+    {
+        float distance = Mathf.Abs(sliderValue - idealLevel);
+
+        if (distance < tolerance / 4)
+        {
+            return 1f; // Perfect alignment
+        }
+        else if (distance > tolerance)
+        {
+            return 0f; // Out of tolerance
+        }
+
+        return 1f - (distance / tolerance); // Gradual penalty
+    }
+
+    // Yeni method - TaskTimeDisplay için
+    public float GetTaskDueTimeInMinutes()
+    {
+        return taskDueTimeInMinutes;
+    }
+
+    private void UpdateTaskAvailabilityMessage()
+    {
+        if (isTaskActive)
+        {
+            if (taskButtons.Count == 0)
+            {
+                noTasksText.text = "Zaten bir görevin var";
+            }
+            else
+            {
+                noTasksText.text = "";
+            }
+        }
+        else
+        {
+            if (taskButtons.Count == 0)
+            {
+                noTasksText.text = "Şu an yeni görev yok, git biraz uyu!";
+            }
+            else
+            {
+                noTasksText.text = "";
+            }
+        }
+    }
 
 }

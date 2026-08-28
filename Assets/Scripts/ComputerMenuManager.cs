@@ -10,8 +10,8 @@ public class ComputerMenuManager : MonoBehaviour
     [SerializeField] private GameObject tasksButton;
     [SerializeField] private GameObject storeButton;
     
-    private float scaleFactorX = 0.01f;
-    private float scaleFactorY = 0.1f;
+    private float scaleFactorX = 0.15f;
+    private float scaleFactorY = 0.15f;
     Vector3 tasksButtonOriginalScale;
     Vector3 tasksButtonNewScale;
     Vector3 storeButtonOriginalScale;

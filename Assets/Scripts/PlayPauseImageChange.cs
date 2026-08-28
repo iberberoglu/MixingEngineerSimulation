@@ -10,7 +10,11 @@ public class PlayPauseImageChange : MonoBehaviour
     [SerializeField] Image imageComponent;
     [SerializeField] MixerControl mixerControl;
     [SerializeField] MixTasksManager mixTasksManager;
+    [SerializeField] public GameObject pleaseSelectTaskPanel;
     
+    private void Start() {
+        pleaseSelectTaskPanel.SetActive(false);
+    }
     public void ChangeImage()
     {
         if(mixTasksManager.isTaskActive)
@@ -28,7 +32,7 @@ public class PlayPauseImageChange : MonoBehaviour
         }
         else
         {
-            Debug.Log("Please select a task first!");
+            pleaseSelectTaskPanel.SetActive(true);
         }
     }
     

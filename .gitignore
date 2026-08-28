@@ -93,3 +93,16 @@ crashlytics-build.properties
 # If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
 # Log files can be ignored.
 fmod_editor.log
+# ── Aşağısı bu proje için elle eklendi ──────────────────────────────
+# JetBrains Rider / IntelliJ yerel ayarları
+.idea/
+
+# FMOD bank istisnası:
+# Yukarıdaki FMOD standart kuralı .bank dosyalarını yok sayar; bu kural
+# ancak FMOD Studio kaynak projesi (.fspro) ayrıca versiyonlandığında
+# doğrudur. Bu depoda kaynak proje YOK (../Producer-Simulation-FMOD/),
+# dolayısıyla derlenmiş bank'ler oyunun sesinin tek kopyası. Toplam
+# 2,7 MB — takip ediliyor. Kaynak proje depoya eklenirse bu istisna
+# kaldırılabilir.
+!/[Aa]ssets/StreamingAssets/**/*.bank
+!/[Aa]ssets/StreamingAssets/**/*.bank.meta

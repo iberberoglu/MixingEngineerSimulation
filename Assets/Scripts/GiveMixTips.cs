@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 public class GiveMixTips : MonoBehaviour
@@ -17,15 +16,18 @@ public class GiveMixTips : MonoBehaviour
         List<float> idealLevels = new List<float> {ch1IdealLevel, ch2IdealLevel, ch3IdealLevel, ch4IdealLevel};
         for(int i = 0; i < 4; i++)
         {
+            // Generate a random offset for the tolerance
+            float randomOffset = Random.Range(-tolerance / 2, tolerance / 2);
+
             toleranceAreaTops[i].transform.localPosition = new Vector3(
                 toleranceAreaTops[i].transform.localPosition.x,
-                MapValueUsingMathf(tolerance + idealLevels[i], true),
+                MapValueUsingMathf(tolerance + idealLevels[i] + randomOffset, true),
                 toleranceAreaTops[i].transform.localPosition.z
             );
 
             toleranceAreaBottoms[i].transform.localPosition = new Vector3(
                 toleranceAreaBottoms[i].transform.localPosition.x,
-                MapValueUsingMathf(idealLevels[i] - tolerance, false),
+                MapValueUsingMathf(idealLevels[i] - tolerance + randomOffset, false),
                 toleranceAreaBottoms[i].transform.localPosition.z
             );
 
