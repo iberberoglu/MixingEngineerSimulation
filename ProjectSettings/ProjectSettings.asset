@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: Berberoglu Games
-  productName: Producer Simulation
+  productName: Mixing Engineer Simulation
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -683,7 +683,7 @@ PlayerSettings:
   cloudProjectId: 19d5f3c1-679f-4305-a9fb-b9067c22058d
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Producer Simulation
+  projectName: Mixing Engineer Simulation
   organizationId: iberberoglu1
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

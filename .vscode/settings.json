@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Producer Simulation.sln"
+    "dotnet.defaultSolution": "Mixing Engineer Simulation.sln"
 }

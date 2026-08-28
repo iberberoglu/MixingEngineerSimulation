@@ -1,4 +1,4 @@
-# Producer Simulation — Bulgular ve Yapılacaklar
+# Mixing Engineer Simulation — Bulgular ve Yapılacaklar
 
 > Bu dosya 28 Ağustos 2026'da yapılan kod incelemesinin çıktısıdır.
 > Her madde bağımsız ele alınabilir. Satır numaraları inceleme
@@ -24,7 +24,7 @@ gerçek FMOD DSP metering'inden okunuyor.
 | Kamera | Cinemachine 2.10.3 |
 | Kod | 27 script, ~2.100 satır C# |
 | Sahneler | MainMenu → MainScene |
-| Repo | `github.com/iberberoglu/Producer-Simulation` |
+| Repo | `github.com/iberberoglu/MixingEngineerSimulation` |
 
 **Oyun döngüsü:**
 
@@ -50,7 +50,7 @@ XP ve para bu çarpanla ölçekleniyor
 
 ---
 
-## Git durumu (28 Ağu 2026'da düzeltildi)
+## Git durumu (28 Ağu 2026'da düzeltildi ve push edildi)
 
 Yapılanlar:
 
@@ -65,35 +65,42 @@ Yapılanlar:
 - Görseller, prefab'lar, ScriptableObject'ler, URP ayarları commit edildi
 - `.DS_Store` ve `.plastic/` takipten çıkarıldı, `.idea/` gitignore'a
   eklendi
+- Proje `Producer Simulation` → `Mixing Engineer Simulation` olarak
+  yeniden adlandırıldı (aşağıya bak)
+- `Test` dalı `main`'e birleştirildi ve `main` push edildi. GitHub'daki
+  depo artık oynanabilir oyunun tamamını içeriyor.
 
-Sonuç: `Test` dalındasın, çalışma ağacı temiz, 2 yeni commit.
+### Proje adı değişikliği (28 Ağu 2026)
 
-### ⚠ Çözülmemiş: hiçbir şey push edilmemiş
+`Producer Simulation` → `Mixing Engineer Simulation`. Değişen yerler:
 
-```
-origin/main  ←── en son burada duruyor (2 Ara 2024 civarı)
-Test         ←── SEN BURADASIN, 3 commit ileride
-```
+| Yer | Not |
+|---|---|
+| `origin` remote | `github.com/iberberoglu/MixingEngineerSimulation` |
+| `ProjectSettings.asset` → `productName` | build çıktısının adı |
+| `ProjectSettings.asset` → `projectName` | Unity Cloud alanı (`cloudEnabled: 0`, kullanılmıyor) |
+| `Assets/Input System/…Input System.inputactions` | dosya adı + içindeki `name`; GUID `ff4aab23…` korundu, sahne referansları sağlam |
+| `.vscode/settings.json` | `dotnet.defaultSolution` |
+| Disk klasörü | `~/Documents/Mixing Engineer Simulation` |
 
-`Test` dalı `origin`'e hiç gönderilmemiş. GitHub'daki sürüm oyunun
-sahnelerini bile içermiyor. Push etmek dışarıya veri göndermek olduğu
-için senin onayın olmadan yapılmadı.
+Eski `Producer Simulation.sln` silindi; Unity açılışta yeni adla
+yeniden üretir (`.sln`/`.csproj` zaten git'te değil).
 
-Push etmek istersen:
+**Bilerek değiştirilmeyenler:**
 
-```bash
-cd ~/Documents/"Producer Simulation"
-git push -u origin Test
-```
+- `companyName: Berberoglu Games`
+- `cloudProjectId` / `organizationId` — Unity bağlantısı bozulmasın diye
+- Ana menü başlığı `"Mix Mühendisi Simülasyonu"` — menünün geri kalanı
+  da Türkçe ("Başla"), tutarlı kalsın diye
+- FMOD `sourceProjectPath: ../Producer-Simulation-FMOD/…` — yedekten
+  gelecek klasörün adı bu; ikisi birlikte değişmeli (3 numaraya bak)
+- `Builds/` içindeki eski `.app` dosyalarının adları
 
-`Test` dalını ana dal yapmak istersen (önerilen — asıl iş orada):
-
-```bash
-git checkout main
-git merge Test          # çakışma beklemiyorum, main çok geride
-git push origin main
-```
-
+⚠ `applicationIdentifier` boş ve `overrideDefaultApplicationIdentifier: 0`
+olduğu için bundle id `productName`'den türüyor — yani o da değişti.
+Kayıt sistemi henüz olmadığı için kaybolan veri yok, ama **2 numaradaki
+kayıt sistemini eklemeden önce** bu id'yi sabitle; sonradan değişirse
+oyuncuların kayıtları kaybolur.
 ### FMOD bank'leri neden takibe alındı
 
 FMOD'un standart `.gitignore`'u `.bank` dosyalarını yok sayar. O kural
@@ -213,7 +220,7 @@ düzenleyemezsin.
 kopyala (yol ayarı göreli, o yüzden konum önemli):
 
 ```
-~/Documents/Producer Simulation/
+~/Documents/Mixing Engineer Simulation/
 ~/Documents/Producer-Simulation-FMOD/     ← buraya
 ```
 
@@ -408,14 +415,17 @@ if (rewardMultiplier >= 0.999f)
 - **`Mix Mühendisi Simulation 1.9.app`** — en yeni, 25 Oca 2025,
   universal (x86_64 + arm64). Çift tıklayıp oynayabilirsin.
 
-İsim değişikliği (Producer → Mix Mühendisi) 1.9'da olmuş; proje
-ayarlarında `productName` hâlâ "Producer Simulation".
+İsim değişikliği 1.9'da build tarafında olmuş ama proje ayarlarına
+yansımamıştı; 28 Ağu 2026'da `productName` da
+`Mixing Engineer Simulation` yapıldı. Bundan sonraki build'ler bu adla
+çıkacak — eski `.app`'lerin adları geçmiş kayıt olarak duruyor.
 
 ---
 
 ## Önerilen sıra
 
-1. **Git**: `Test` dalını push et, `main`'e almayı düşün
+1. ~~**Git**: `Test` dalını push et~~ ✅ 28 Ağu 2026 — `main`'e
+   birleştirilip push edildi, proje adı da değiştirildi
 2. **3 numara**: FMOD kaynak projesini diskten kurtar (bu kaybolursa
    geri dönüşü yok, en acili)
 3. **1 numara**: zaman hatası — oyunun ana mekaniği ölü durumda
