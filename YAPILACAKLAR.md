@@ -111,6 +111,43 @@ istisna eklendi. Kaynak proje depoya girerse istisna kaldırılabilir.
 
 ---
 
+## README (28 Ağu 2026'da eklendi)
+
+Depoda iki README var, ikisi de CV'ye/portfolyoya bakan bir okuyucu
+için yazıldı:
+
+- [`README.md`](README.md) — İngilizce, ana dosya
+- [`README.tr.md`](README.tr.md) — Türkçe
+
+Kaynakları: kaynak kodun tamamı, `Serbest Proje Çalışması 3/` içindeki
+okul raporu ve sunumu. Sunum klasörü `.gitignore`'da — ders teslimi,
+depoya girmemeli.
+
+Ekran görüntüleri `docs/screenshots/` altında (raporun `OYUN GÖRSELLER`
+klasöründen alınıp 1440 px'e küçültüldü). Ana menü ekran görüntüsü
+bilerek kullanılmadı: eski "Producer Simulation" başlığını gösteriyor.
+
+### ⚠ Çalışma kuralı
+
+**README'yi etkileyen bir değişiklik yaparsak README'yi de aynı anda
+güncelleyeceğiz** — iki dilde birden. README'ye dokunmayı gerektiren
+tipik işler:
+
+| Yapılan iş | README'de güncellenecek |
+|---|---|
+| 1 (zaman hatası) düzeltilirse | "Bilinen eksikler" listesinden çıkar |
+| 2 (kayıt sistemi) eklenirse | "Bilinen eksikler" + sistemler tablosu |
+| 4 (yeni görev/şarkı) eklenirse | Görev tablosu, "içerik az" maddesi |
+| 5 (rastgele görev aralığı) bağlanırsa | Oyun döngüsü diyagramı |
+| Yeni ekran/mekanik | Ekran görüntüleri, sistemler tablosu |
+| Yeni build alınırsa | "Çalıştırmak" bölümü |
+| Puanlama formülü değişirse | Puanlama bölümü (iki dilde de formül var) |
+
+Bilinen eksikler bölümü bilerek dürüst yazıldı; maddeler düzeldikçe
+oradan silinmesi gerekiyor, yoksa README projeyi olduğundan kötü
+gösterir.
+
+
 ## 🔴 Kritik
 
 ### 1. Görev süresi hiçbir zaman dolmuyor

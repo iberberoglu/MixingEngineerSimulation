@@ -109,3 +109,6 @@ fmod_editor.log
 
 # Plastic SCM artığı (proje git'e taşındı, bu klasör kullanılmıyor)
 .plastic/
+
+# Okul sunum/rapor dosyaları (ders teslimi, depoya girmemeli)
+/Serbest Proje Çalışması 3/
