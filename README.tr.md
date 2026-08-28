@@ -231,8 +231,7 @@ ekonomi, ilerleme, zaman), üstüne iki iş kadar da içerik vardı.
 - Bunlara ek olarak birkaç küçük sorun: hiçbir şeyi durdurmayan bir `StopCoroutine`, eski ve yeni
   input sistemlerinin karışması, puanlama yolunda bir float eşitlik karşılaştırması.
 
-İncelemenin tamamı, önceliklendirilmiş hâlde [`YAPILACAKLAR.md`](YAPILACAKLAR.md) dosyasında; aynı
-zamanda projenin yapılacaklar listesi olarak duruyor.
+İncelemenin tamamını önceliklendirilmiş hâlde, projenin çalışma listesi olarak tutuyorum.
 
 ### Nereye gidebilir
 

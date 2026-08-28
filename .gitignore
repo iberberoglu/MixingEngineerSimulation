@@ -112,3 +112,6 @@ fmod_editor.log
 
 # Okul sunum/rapor dosyaları (ders teslimi, depoya girmemeli)
 /Serbest Proje Çalışması 3/
+
+# Kod inceleme / yapılacaklar notları (yerel çalışma dosyası, depoya girmemeli)
+/YAPILACAKLAR.md

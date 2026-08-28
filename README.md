@@ -231,8 +231,7 @@ Coming back to the code in 2026, I reviewed it properly and wrote the findings d
 - Plus a handful of smaller issues: a `StopCoroutine` that stops nothing, mixed old and new input
   systems, a float equality comparison in the scoring path.
 
-The full review, prioritised, is in [`YAPILACAKLAR.md`](YAPILACAKLAR.md) *(Turkish)* and doubles as
-the project backlog.
+I keep the full review, prioritised, as the working backlog for the project.
 
 ### Where it would go next
 
