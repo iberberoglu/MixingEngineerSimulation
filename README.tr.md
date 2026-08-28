@@ -208,7 +208,8 @@ gerekmiyor**, sadece sesi düzenlemek için gerekiyor.
 > 🎹 Stüdyonun köşesinde bir piyano var. Yanına gidip `E`'ye bas.
 
 **Sesi düzenlemek** için ayrıca FMOD Studio kaynak projesi (`Producer-Simulation-FMOD.fspro`)
-gerekiyor; o bu deponun dışında, kardeş klasör olarak duruyor. Bkz. [`YAPILACAKLAR.md`](YAPILACAKLAR.md) §3.
+gerekiyor; o bu deponun parçası değil. Ondan üretilen derlenmiş bank'ler depoda olduğu için oyun
+onsuz da çalışıyor.
 
 ---
 

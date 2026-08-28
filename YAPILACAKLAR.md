@@ -236,32 +236,49 @@ yüklemeden **önce** çalıştığından emin ol, yoksa kaydı ezer.
 
 ## 🟠 Ciddi
 
-### 3. FMOD kaynak projesi yedekte yok
+### 3. ~~FMOD kaynak projesi yedekte yok~~ ✅ ÇÖZÜLDÜ (28 Ağu 2026)
 
-**Yer:** `Assets/Plugins/FMOD/Resources/FMODStudioSettings.asset`
+Harici diskte bulundu ve yerine kopyalandı.
 
-```yaml
-sourceProjectPath: ../Producer-Simulation-FMOD/Producer-Simulation-FMOD.fspro
-sourceBankPath:    ../Producer-Simulation-FMOD/Build
-```
+**Bulunduğu yer:**
+`/Volumes/İsmail/2025 Ağustos Eski Bilgisayar son/UNITY/UnityProjects/Producer-Simulation-FMOD`
 
-Bu klasör Unity projesinin **kardeşi** ve yedeğe girmedi. Derlenmiş
-`.bank`'ler var (oyun çalışır) ama `.fspro` olmadan **hiçbir sese
-dokunamazsın**: yeni şarkı ekleyemez, stem değiştiremez, mix event'i
-düzenleyemezsin.
-
-**Yapılacak:** harici diski tak,
-`2025 Ağustos Eski Bilgisayar son/UNITY/UnityProjects/` altında
-`Producer-Simulation-FMOD` klasörünü ara ve
-`~/Documents/` altına, Unity projesinin **kardeşi olacak şekilde**
-kopyala (yol ayarı göreli, o yüzden konum önemli):
+**Kopyalandığı yer** (Unity projesinin kardeşi, göreli yol bu yüzden önemli):
 
 ```
-~/Documents/Mixing Engineer Simulation/
-~/Documents/Producer-Simulation-FMOD/     ← buraya
+~/Documents/Mixing Engineer Simulation/     ← Unity projesi
+~/Documents/Producer-Simulation-FMOD/       ← FMOD kaynak projesi
 ```
 
-Bulunamazsa bank'lerden geri dönüş yok — sesi sıfırdan kurman gerekir.
+`FMODStudioSettings.asset` içindeki `../Producer-Simulation-FMOD/...`
+yolları artık çözümleniyor, ayrıca doğrulandı.
+
+**Doğrulama sonuçları:**
+
+| Kontrol | Sonuç |
+|---|---|
+| rsync checksum karşılaştırması | 0 fark |
+| Dosya sayısı | 107 = 107 |
+| `Assets/` içeriği | 11 ses dosyası (stem'ler), 42 MB |
+| `Metadata/Event` | event tanımları yerinde |
+| `Build/Desktop` ↔ `Assets/StreamingAssets` | **7 bank'in 7'si de md5 aynı** |
+
+Yani kaynak proje, oyunun içindeki derlenmiş sesle birebir senkron.
+Hiçbir şey kaybolmamış; artık yeni şarkı ekleyebilir, stem
+değiştirebilir, mix event'i düzenleyebilirsin.
+
+### ⚠ Kalan risk: kopya sayısı iki
+
+Şu an proje iki yerde: harici disk ve Mac. İkisi de fiziksel olarak
+aynı masada. Klasör git'te **değil** (377 MB, ayrıca Unity deposunun
+parçası değil) ve olması da gerekmiyor.
+
+Asıl değerli kısım `Assets/` altındaki 42 MB'lık ham ses dosyaları;
+bunlar kaybolursa bank'lerden geri dönüş yok. Bulut ya da ikinci bir
+diskte üçüncü bir kopya almaya değer. Sadece `Assets/` + `Metadata/`
+yedeklemek yeterli (`.cache`, `.unsaved`, `.user` ve `Build`
+yeniden üretilebilir), bu da ~50 MB'a iniyor.
+
 
 ---
 
@@ -463,9 +480,11 @@ yansımamıştı; 28 Ağu 2026'da `productName` da
 
 1. ~~**Git**: `Test` dalını push et~~ ✅ 28 Ağu 2026 — `main`'e
    birleştirilip push edildi, proje adı da değiştirildi
-2. **3 numara**: FMOD kaynak projesini diskten kurtar (bu kaybolursa
-   geri dönüşü yok, en acili)
+2. ~~**3 numara**: FMOD kaynak projesini diskten kurtar~~ ✅ 28 Ağu 2026 —
+   bulundu, `~/Documents/Producer-Simulation-FMOD/` altına kopyalandı,
+   bank'lerle birebir senkron olduğu doğrulandı
 3. **1 numara**: zaman hatası — oyunun ana mekaniği ölü durumda
+   **← sıradaki iş**
 4. **4 numara**: içerik (görev sayısı + başarısız görev tekrarı)
 5. **2 numara**: kayıt sistemi
 6. **6, 8, 9, 10**: küçük ve bağımsız, aralara sıkıştırılabilir

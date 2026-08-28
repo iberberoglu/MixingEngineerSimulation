@@ -208,8 +208,8 @@ game**, only to edit its audio.
 > 🎹 There's a piano in the corner of the studio. Press `E` at it.
 
 **Editing the audio** additionally requires the FMOD Studio source project
-(`Producer-Simulation-FMOD.fspro`), which lives outside this repository as a sibling folder. See
-[`YAPILACAKLAR.md`](YAPILACAKLAR.md) §3.
+(`Producer-Simulation-FMOD.fspro`), which is not part of this repository. The compiled banks it
+produces are, so the game runs without it.
 
 ---
 
