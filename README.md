@@ -1,6 +1,6 @@
 # Mixing Engineer Simulation
 
-**A 2D pixel-art simulation game about freelancing as a mixing engineer — with a console that actually mixes.**
+**A 2D pixel-art simulation game about freelancing as a mixing engineer, with a console that actually mixes.**
 
 [![Unity](https://img.shields.io/badge/Unity-2022.3.50f1-000000?logo=unity)](https://unity.com/)
 [![FMOD](https://img.shields.io/badge/FMOD%20Studio-2.02.25-ff6600)](https://www.fmod.com/)
@@ -10,8 +10,8 @@
 📄 **[Türkçe README →](README.tr.md)**
 
 The four faders on screen drive real `Gain` parameters on FMOD event instances, and the level meters
-read live peak values out of FMOD's DSP metering API. The audio side isn't a mock-up of mixing — it
-*is* mixing, wired to the game's scoring.
+read live peak values out of FMOD's DSP metering API. The audio side isn't a mock-up of mixing. It
+*is* mixing, wired straight into the game's scoring.
 
 ![Studio](docs/screenshots/studio.png)
 
@@ -19,26 +19,26 @@ read live peak values out of FMOD's DSP metering API. The audio side isn't a moc
 
 ## About
 
-Developed in 2025 for *Serbest Proje Çalışması 3* (Independent Project Study 3) at
-**Istanbul Technical University — Music Technology**, supervised by Dr. Ozan Sarıer and submitted in
-January 2025.
+I built this in 2025 for *Serbest Proje Çalışması 3* (Independent Project Study 3) at **Istanbul
+Technical University, Music Technology**. Dr. Ozan Sarıer supervised the project and I submitted it
+in January 2025.
 
 My background is audio, not games. Before this I had written an RMS compressor plug-in in C++/JUCE,
-and I wanted a project that put music technology *inside* something interactive — so I learned Unity
-and C# from scratch for it, and brought in FMOD as the audio engine because the concept needed
+and I wanted a project that put music technology *inside* something interactive, so I learned Unity
+and C# from scratch for it and brought in FMOD as the audio engine, because the concept needed
 DAW-grade control over individual channels.
 
 **The premise:** you play a freshly graduated engineer with no money and no credits. Jobs arrive on
-the studio computer — *"The vocals are too quiet!"* — and you sit at the console, ride four faders
+the studio computer (*"The vocals are too quiet!"*), and you sit at the console, ride four faders
 until each lands in the range the client asked for, and deliver. Accuracy pays: XP and cash both
 scale with how close you got. Cash buys better monitors, and better monitors reveal the target
-ranges on screen — a progression loop where the upgrade is literally *hearing better*.
+ranges on screen. It's a progression loop where the upgrade is literally *hearing better*.
 
 ---
 
 ## Screenshots
 
-| Mixing console — four channels, live FMOD meters | Job board on the studio computer | Store — monitor upgrades |
+| Mixing console: four channels, live FMOD meters | Job board on the studio computer | Store: monitor upgrades |
 |---|---|---|
 | ![Mixer](docs/screenshots/mixer.png) | ![Tasks](docs/screenshots/tasks.png) | ![Store](docs/screenshots/store.png) |
 
@@ -46,15 +46,15 @@ ranges on screen — a progression loop where the upgrade is literally *hearing 
 
 ## The interesting part: the mixer is real
 
-The easy way to build this game is to fake it — dummy sliders and a scripted "score". I wanted the
+The easy way to build this game is to fake it: dummy sliders and a scripted "score". I wanted the
 audio to genuinely respond, because that's the part I actually knew something about.
 
 ### Faders → FMOD parameter
 
-Each channel is its own FMOD event instance (`event:/Track 1/Bass`, `/Drums`, `/GuitarKeyboard`,
-`/Vox`), authored in FMOD Studio with a `Gain` parameter automating volume on the master track.
-[`MixerControl.cs`](Assets/Scripts/MixerControl.cs) maps the UI slider's 0–100 range onto −80…+10 dB
-and pushes it straight into FMOD:
+I authored each channel as its own FMOD event instance (`event:/Track 1/Bass`, `/Drums`,
+`/GuitarKeyboard`, `/Vox`), each carrying a `Gain` parameter that automates volume on its master
+track. [`MixerControl.cs`](Assets/Scripts/MixerControl.cs) maps the UI slider's 0–100 range onto
+−80…+10 dB and pushes it straight into FMOD:
 
 ```csharp
 float normalizedValue = Mathf.Clamp01(value / 100f);
@@ -81,16 +81,16 @@ dsp.getMeteringInfo(out _, out meteringInfo);
 float db = 20f * Mathf.Log10(Mathf.Max(meteringInfo.peaklevel[0], 0.0001f));
 ```
 
-Raw per-frame peaks are far too jittery to read, so the value runs through a **10-frame moving
-average** before being quantised to one of the pixel-art meter sprites. That smoothing is the whole
+Raw per-frame peaks are far too jittery to read, so I run the value through a **10-frame moving
+average** before quantising it to one of the pixel-art meter sprites. That smoothing is the whole
 difference between a meter you can read and a strobe light.
 
 ### Why FMOD instead of Unity's audio
 
-This is the decision the whole project turned on. Unity's built-in `AudioSource` / `AudioMixer` plays
-back audio perfectly well, but it doesn't expose per-channel output levels in the way a visible
-mixing console needs. FMOD does — and as a bonus it let the entire audio side be authored like a DAW
-session, with a real mixer tree, buses and parameters, instead of being assembled in code.
+This is the decision the whole project turned on. Unity's built-in `AudioSource` and `AudioMixer`
+play back audio perfectly well, but they don't expose per-channel output levels in the way a visible
+mixing console needs. FMOD does, and as a bonus it let me author the entire audio side like a DAW
+session, with a real mixer tree, buses and parameters, instead of assembling it in code.
 
 ---
 
@@ -115,7 +115,7 @@ session, with a real mixer tree, buses and parameters, instead of being assemble
 ```
 
 An in-game clock runs at **10 game-minutes per real second**, starting at 06:00 on day 1. Jobs carry
-a deadline in days; sleeping advances time by 8 hours when you'd rather skip ahead.
+a deadline in days, and sleeping advances time by 8 hours when you'd rather skip ahead.
 
 ---
 
@@ -138,16 +138,16 @@ multiplier = (mean factor of critical channels × 0.7)
 XP and money are both scaled by that multiplier
 ```
 
-Each job flags which channels are *critical* — the ones the client actually complained about — so
-fixing the vocal counts for far more than not breaking the bass. Levelling uses a simple quadratic
-curve: XP needed for the next level is `level² × 100`.
+Each job flags which channels are *critical*, meaning the ones the client actually complained about,
+so fixing the vocal counts for far more than not breaking the bass. Levelling uses a simple
+quadratic curve: XP needed for the next level is `level² × 100`.
 
 The shipped content is two jobs on two songs:
 
 | Job | Song | Deadline | Reward | Tolerance | Critical channels |
 |---|---|---|---|---|---|
-| *"The vocals are too quiet!"* | Track 1 — Bass / Drums / Guitar-Keys / Vox | 2 days | 100 XP · $100 | ±10 | Vox |
-| *"Drums and keys are too loud — especially the keys!"* | Track 2 — Bass / Drums / Guitar / Keyboard | 4 days | 200 XP · $200 | ±9 | Drums, Keyboard |
+| *"The vocals are too quiet!"* | Track 1: Bass / Drums / Guitar-Keys / Vox | 2 days | 100 XP · $100 | ±10 | Vox |
+| *"Drums and keys are too loud, especially the keys!"* | Track 2: Bass / Drums / Guitar / Keyboard | 4 days | 200 XP · $200 | ±9 | Drums, Keyboard |
 
 ---
 
@@ -155,17 +155,18 @@ The shipped content is two jobs on two songs:
 
 | Script | Responsibility |
 |---|---|
-| [`MixerControl`](Assets/Scripts/MixerControl.cs) | Owns the four FMOD event instances; slider → `Gain` mapping, transport, cleanup |
+| [`MixerControl`](Assets/Scripts/MixerControl.cs) | Owns the four FMOD event instances: slider to `Gain` mapping, transport, cleanup |
 | [`MeteringDisplay`](Assets/Scripts/MeteringDisplay.cs) | FMOD DSP metering → smoothed dB → meter sprites |
 | [`MixTasksManager`](Assets/Scripts/MixTasksManager.cs) | Job pool, acceptance, deadlines, scoring, rewards *(the largest script, 554 lines)* |
 | [`GameTimeManager`](Assets/Scripts/GameTimeManager.cs) | In-game clock and day counter, singleton across scenes |
 | [`PlayerStats`](Assets/Scripts/PlayerStats.cs) | Money, XP, level curve, singleton across scenes |
 | [`StoreManager`](Assets/Scripts/StoreManager.cs) | Equipment purchases and their gameplay effects |
-| [`GiveMixTips`](Assets/Scripts/GiveMixTips.cs) | Draws the tolerance bands unlocked by monitor upgrades — the better speaker draws a narrower band, and both are nudged by a random offset so the hint approximates the target instead of giving it away |
+| [`GiveMixTips`](Assets/Scripts/GiveMixTips.cs) | Draws the tolerance bands unlocked by monitor upgrades. The better speaker draws a narrower band, and I offset both by a random amount so the hint approximates the target instead of giving it away |
 | [`PlayerController`](Assets/Scripts/PlayerController.cs) / [`PlayerInteraction`](Assets/Scripts/PlayerInteraction.cs) | New Input System movement, animation blend tree, proximity interaction |
 
-Jobs, songs and store items are **ScriptableObjects** ([`Assets/Scriptable Objects/`](Assets/Scriptable%20Objects)),
-so new content is authored in the Inspector rather than in code.
+I keep jobs, songs and store items as **ScriptableObjects**
+([`Assets/Scriptable Objects/`](Assets/Scriptable%20Objects)), so new content goes in through the
+Inspector rather than through code.
 
 <details>
 <summary><b>Repository layout</b></summary>
@@ -196,7 +197,7 @@ git clone https://github.com/iberberoglu/MixingEngineerSimulation.git
 
 Open the folder in Unity Hub, load `Assets/Scenes/MainMenu.unity`, and press Play. The compiled FMOD
 banks are committed under `Assets/StreamingAssets/`, so **FMOD Studio is not needed to run the
-game** — only to edit its audio.
+game**, only to edit its audio.
 
 | Control | Action |
 |---|---|
@@ -207,27 +208,27 @@ game** — only to edit its audio.
 > 🎹 There's a piano in the corner of the studio. Press `E` at it.
 
 **Editing the audio** additionally requires the FMOD Studio source project
-(`Producer-Simulation-FMOD.fspro`), which lives outside this repository as a sibling folder — see
+(`Producer-Simulation-FMOD.fspro`), which lives outside this repository as a sibling folder. See
 [`YAPILACAKLAR.md`](YAPILACAKLAR.md) §3.
 
 ---
 
 ## Scope and known limitations
 
-This is an honest prototype, not a finished game, and I'd rather say so than oversell it. It shipped
-as coursework with the core loop complete end to end — mixing, scoring, economy, progression, time —
-and two jobs' worth of content on top.
+This is an honest prototype, not a finished game, and I'd rather say so than oversell it. I shipped
+it as coursework with the core loop complete end to end (mixing, scoring, economy, progression,
+time) and two jobs' worth of content on top.
 
-Revisiting the code in 2026, I reviewed it properly and wrote the findings down:
+Coming back to the code in 2026, I reviewed it properly and wrote the findings down:
 
-- **Content is thin.** Two jobs, two songs; the pool empties by day three, and a failed job is marked
-  completed rather than returning to the pool.
-- **No save system.** Money, XP, level and purchases reset when the game closes — the single largest
-  structural gap for a progression game.
+- **Content is thin.** Two jobs, two songs. The pool empties by day three, and a failed job gets
+  marked completed rather than returning to the pool.
+- **No save system.** Money, XP, level and purchases reset when the game closes, which is the single
+  largest structural gap for a progression game.
 - **The deadline mechanic never fires.** The clock resets to zero each day while job deadlines are
   computed as absolute minutes, so the comparison never triggers. The game's only time pressure is
   effectively dead code.
-- Plus a handful of smaller issues — a `StopCoroutine` that stops nothing, mixed old/new input
+- Plus a handful of smaller issues: a `StopCoroutine` that stops nothing, mixed old and new input
   systems, a float equality comparison in the scoring path.
 
 The full review, prioritised, is in [`YAPILACAKLAR.md`](YAPILACAKLAR.md) *(Turkish)* and doubles as
@@ -243,11 +244,11 @@ the progression stick.
 
 ## Credits
 
-- **Code, game design, FMOD project, audio** — İsmail Berberoğlu
-- **Mixing console and custom pixel art** — created in Photoshop with a friend
-- **Character, interior and UI sprites** — free asset packs (Characters_free, Interiors_free,
+- **Code, game design, FMOD project, audio:** İsmail Berberoğlu
+- **Mixing console and custom pixel art:** I made these in Photoshop together with a friend
+- **Character, interior and UI sprites:** free asset packs (Characters_free, Interiors_free,
   Complete UI Essential Pack, sierrassets furniture pack), each under its own licence
-- **Supervisor** — Dr. Ozan Sarıer, ITU Music Technology
+- **Supervisor:** Dr. Ozan Sarıer, İTÜ Music Technology
 
 Built with [Unity](https://unity.com/) · [FMOD Studio](https://www.fmod.com/) by Firelight
 Technologies · [TextMesh Pro](https://docs.unity3d.com/Manual/com.unity.textmeshpro.html) ·
@@ -255,5 +256,5 @@ Technologies · [TextMesh Pro](https://docs.unity3d.com/Manual/com.unity.textmes
 
 ---
 
-<sub>Originally developed under the name *Producer Simulation*, renamed to *Mixing Engineer
-Simulation* in 2026.</sub>
+<sub>I originally developed this under the name *Producer Simulation* and renamed it to *Mixing
+Engineer Simulation* in 2026.</sub>
