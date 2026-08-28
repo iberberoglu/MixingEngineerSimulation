@@ -16,7 +16,10 @@ read live peak values out of FMOD's DSP metering API. The audio side isn't a moc
 
 ▶ **[Download the playable macOS build](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest)** (universal binary, no Unity or FMOD Studio needed)
 
-![Studio](docs/screenshots/studio.png)
+![Mixing a job](docs/screenshots/gameplay.gif)
+
+*Taking a job at the console: the faders drive `Gain` parameters on FMOD event instances, and the
+meters read peak levels straight back out of FMOD's DSP metering.*
 
 ---
 
@@ -42,9 +45,9 @@ ranges on screen. It's a progression loop where the upgrade is literally *hearin
 
 ## Screenshots
 
-| Mixing console: four channels, live FMOD meters | Job board on the studio computer | Store: monitor upgrades |
+| The studio | Job board on the studio computer | Store: monitor upgrades |
 |---|---|---|
-| ![Mixer](docs/screenshots/mixer.png) | ![Tasks](docs/screenshots/tasks.png) | ![Store](docs/screenshots/store.png) |
+| ![Studio](docs/screenshots/studio.png) | ![Tasks](docs/screenshots/tasks.png) | ![Store](docs/screenshots/store.png) |
 
 ---
 
@@ -88,6 +91,11 @@ float db = 20f * Mathf.Log10(Mathf.Max(meteringInfo.peaklevel[0], 0.0001f));
 Raw per-frame peaks are far too jittery to read, so I run the value through a **10-frame moving
 average** before quantising it to one of the pixel-art meter sprites. That smoothing is the whole
 difference between a meter you can read and a strobe light.
+
+![The mixing console](docs/screenshots/mixer.png)
+
+*Each channel strip pairs a fader with its own meter. The green bars are live FMOD peak levels, not
+an animation.*
 
 ### Why FMOD instead of Unity's audio
 

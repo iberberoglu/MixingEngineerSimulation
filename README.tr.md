@@ -16,7 +16,10 @@ taklidi değil. Oyunun puanlamasına bağlı, çalışan bir mix.
 
 ▶ **[Oynanabilir macOS sürümünü indir](https://github.com/iberberoglu/MixingEngineerSimulation/releases/latest)** (evrensel binary, Unity veya FMOD Studio gerekmiyor)
 
-![Stüdyo](docs/screenshots/studio.png)
+![Mix yaparken](docs/screenshots/gameplay.gif)
+
+*Konsolda bir iş: fader'lar FMOD event instance'larının `Gain` parametrelerini sürüyor, metreler de
+peak seviyeleri doğrudan FMOD'un DSP metering'inden okuyor.*
 
 ---
 
@@ -41,9 +44,9 @@ aralıkları ekranda görünür kılıyor. Yani yükselttiğin şey doğrudan *d
 
 ## Ekran görüntüleri
 
-| Mix konsolu: dört kanal, canlı FMOD metreleri | Bilgisayardaki iş ilanları | Dükkân: monitör yükseltmeleri |
+| Stüdyo | Bilgisayardaki iş ilanları | Dükkân: monitör yükseltmeleri |
 |---|---|---|
-| ![Mixer](docs/screenshots/mixer.png) | ![Görevler](docs/screenshots/tasks.png) | ![Dükkan](docs/screenshots/store.png) |
+| ![Stüdyo](docs/screenshots/studio.png) | ![Görevler](docs/screenshots/tasks.png) | ![Dükkan](docs/screenshots/store.png) |
 
 ---
 
@@ -87,6 +90,11 @@ float db = 20f * Mathf.Log10(Mathf.Max(meteringInfo.peaklevel[0], 0.0001f));
 Kare başına ham peak değerleri okunamayacak kadar zıplıyor; bu yüzden değeri, pixel-art metre
 sprite'larından birine yuvarlamadan önce **10 karelik hareketli ortalamadan** geçiriyorum. Okunabilir
 bir metre ile stroboskop arasındaki fark tam olarak bu yumuşatma.
+
+![Mix konsolu](docs/screenshots/mixer.png)
+
+*Her kanal şeridinde bir fader ve kendi metresi var. Yeşil barlar animasyon değil, FMOD'dan gelen
+canlı peak seviyeleri.*
 
 ### Neden Unity'nin ses sistemi değil de FMOD
 
